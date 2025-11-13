@@ -1,0 +1,48 @@
+<!-- src/app/components/register-driver/register-driver.component.html -->
+<div class="register-container">
+  <h2>Driver Registration</h2>
+
+  <form (ngSubmit)="registerDriver()" #registerForm="ngForm">
+    <div class="section">
+      <h3>Personal Information</h3>
+
+      <input [(ngModel)]="driver.FullName" name="fullName" placeholder="Full Name" required />
+      <input [(ngModel)]="driver.Email" name="email" type="email" placeholder="Email" required />
+      <input [(ngModel)]="driver.PhoneNumber" name="phoneNumber" placeholder="Phone Number" required />
+      <input [(ngModel)]="driver.Password" name="password" type="password" placeholder="Password" required />
+      <input [(ngModel)]="driver.License" name="license" placeholder="License Number" required />
+    </div>
+
+    <div class="section">
+      <h3>Vehicle Information</h3>
+
+      <input [(ngModel)]="driver.Vehicle.PlateNumber" name="plateNumber" placeholder="Plate Number" required />
+      <input [(ngModel)]="driver.Vehicle.Model" name="model" placeholder="Model" required />
+      <input [(ngModel)]="driver.Vehicle.Color" name="color" placeholder="Color" required />
+      <input [(ngModel)]="driver.Vehicle.Make" name="make" placeholder="Make" required />
+      <input [(ngModel)]="driver.Vehicle.Year" name="year" type="number" placeholder="Year" required />
+
+      <label>Vehicle Type</label>
+      <select [(ngModel)]="driver.Vehicle.Type" name="type" required>
+        <option *ngFor="let type of vehicleTypes" [ngValue]="type.id">{{ type.name }}</option>
+      </select>
+
+      <label>Capacity</label>
+      <select [(ngModel)]="driver.Vehicle.Capacity" name="capacity" required>
+        <option *ngFor="let cap of capacities" [ngValue]="cap.id">{{ cap.name }}</option>
+      </select>
+
+      <label>Transmission</label>
+      <select [(ngModel)]="driver.Vehicle.Transmission" name="transmission" required>
+        <option *ngFor="let trans of transmissions" [ngValue]="trans.id">{{ trans.name }}</option>
+      </select>
+
+      <label>Engine Type</label>
+      <select [(ngModel)]="driver.Vehicle.EngineType" name="engineType" required>
+        <option *ngFor="let eng of engineTypes" [ngValue]="eng.id">{{ eng.name }}</option>
+      </select>
+    </div>
+
+    <button type="submit" [disabled]="!registerForm.valid">Register</button>
+  </form>
+</div>

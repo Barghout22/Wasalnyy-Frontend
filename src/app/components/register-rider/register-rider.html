@@ -1,0 +1,15 @@
+<div class="register-container">
+  <h2>Rider Registration</h2>
+
+  <form (ngSubmit)="registerRider()" #registerForm="ngForm">
+    <input [(ngModel)]="rider.fullName" name="fullName" placeholder="Full Name" required />
+    <input [(ngModel)]="rider.email" name="email" type="email" placeholder="Email" required />
+    <input [(ngModel)]="rider.phoneNumber" name="phoneNumber" placeholder="Phone Number" required />
+    <input [(ngModel)]="rider.password" name="password" type="password" placeholder="Password" required />
+
+    <label>Provider (optional)</label>
+    <input [(ngModel)]="rider.provider" name="provider" placeholder="Provider (optional)" />
+
+    <button type="submit" [disabled]="!registerForm.valid">Register Rider</button>
+  </form>
+</div>
