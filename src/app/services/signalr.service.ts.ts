@@ -29,10 +29,10 @@ this.hubConnection = new signalR.HubConnectionBuilder()
   .withAutomaticReconnect()
   .build();
  
- if(this.role === 'Driver'){
+
 
     this.hubConnection.on('availableTripsInZone', (trip) => {
-      console.log('Received pending trip:', trip);
+      console.log('Received available trip:', trip);
       this.pendingTripSubject.next(trip);
     });
 
@@ -41,8 +41,6 @@ this.hubConnection = new signalR.HubConnectionBuilder()
       this.pendingTripSubject.next(trip);
     });
 
- } 
-else if(this.role === 'Rider'){
 
     this.hubConnection.on('tripAccepeted', (driver) => {
       console.log('Received trip status update:', driver);
@@ -50,7 +48,6 @@ else if(this.role === 'Rider'){
 
 
 
-  }
      this.hubConnection
       .start()
       .then(() => {

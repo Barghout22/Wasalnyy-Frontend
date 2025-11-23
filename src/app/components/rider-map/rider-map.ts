@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Coordinates } from '../../models/trip-request.dto';
 import { TripService } from '../../services/trip.service';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-rider-map',
@@ -16,17 +17,9 @@ currentLatitude: String|null=null;
 currentLongitude: String|null=null;
 destinationLatitude: String|null=null;
 destinationLongitude: String|null=null;
-constructor( private tripService: TripService) {}
+constructor( private tripService: TripService, private router: Router) {}
 requestTrip() {
-  // Log the raw coordinate values
-  console.log('Raw coordinates:', {
-    currentLat: this.currentLatitude,
-    currentLng: this.currentLongitude,
-    destLat: this.destinationLatitude,
-    destLng: this.destinationLongitude
-  });
-
-  const request = {
+ const request = {
     PaymentMethod: 1,
     PickupCoordinates: {
       Lat: +this.currentLatitude!,   // Unary + converts string to number
@@ -38,23 +31,19 @@ requestTrip() {
     }
   };
 
-  // Log the complete request object
-  console.log('Complete request object:', request);
-  console.log('Request as JSON:', JSON.stringify(request));
-  
-  // Log individual nested objects
-  console.log('PickupCoordinates:', request.PickupCoordinates);
-  console.log('DistinationCoordinates:', request.DistinationCoordinates);
 
   this.tripService.requestTrip(request).subscribe({
     next: (res) => {
-      console.log('SUCCESS:', res);
+      console.log(res);
+      this.currentLatitude=null;
+      this.currentLongitude=null;
+      this.destinationLatitude=null;
+      this.destinationLongitude=null;
     },
-    error: (err) => {
-      console.error('ERROR Status:', err.status);
-      console.error('ERROR Response:', err.error);
-      console.error('Full error object:', JSON.stringify(err.error, null, 2));
+    error: (err) => {console.error('ERROR:', err);
     }
   });
 }
+BackToHomePage(){
+  this.router.navigate(['']);}
 }

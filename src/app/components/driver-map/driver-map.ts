@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { DriverHubService } from '../../services/driverHub.service';
 import { LocationService } from '../../services/location.service';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-driver-map',
@@ -14,10 +15,13 @@ export class DriverMap {
     currentLatitude: number|null = null;
   currentLongitude: number|null = null;
   tripId: string ="";
-constructor(private driverHubService: DriverHubService, private locationService: LocationService) {}
+constructor(private driverHubService: DriverHubService, 
+  private locationService: LocationService, private router: Router) {}
 
 setAvailable(){
    this.driverHubService.SetAsAvailable({Lat:this.currentLatitude!, Lng: this.currentLongitude!}).subscribe(res => {
+   this.currentLatitude=null;
+   this.currentLongitude=null;
     console.log('Driver set as available', res);
     });
 
@@ -26,6 +30,8 @@ setAvailable(){
 updateLocation(){
   this.driverHubService.UpdateLocation({Lat: this.currentLatitude!, Lng: this.currentLongitude!}).subscribe(res => {
     console.log('Driver location updated', res);
+    this.currentLatitude=null;
+    this.currentLongitude=null;
   });
 }
 
@@ -37,6 +43,9 @@ acceptTrip(){
     console.error('Error accepting trip', err);
   });
 
+}
+BackToDashboard(){
+  this.router.navigate(['']);
 }
 
 }
