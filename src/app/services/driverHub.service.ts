@@ -32,26 +32,25 @@ export class DriverHubService {
 
   }
   AcceptTrip(tripId: string) {
-    // send raw GUID string instead of object
     return this.http.post(
-      `${this.TripUrl}/AcceptTrip`,
-      `"${tripId}"`, // <-- raw string for Guid
+      `${this.TripUrl}/AcceptTrip/${tripId}`,
+      null, 
       { headers: this.headers }
     );
   }
 
   StartTrip(tripId: string) {
     return this.http.post(
-      `${this.TripUrl}/StartTrip`,
-      `"${tripId}"`,
+     `${this.TripUrl}/StartTrip/${tripId}`,
+      null, 
       { headers: this.headers }
     );
   }
 
   EndTrip(tripId: string) {
     return this.http.post(
-      `${this.TripUrl}/EndTrip`,
-      `"${tripId}"`,
+     `${this.TripUrl}/EndTrip/${tripId}`,
+      null, 
       { headers: this.headers }
     );
   }

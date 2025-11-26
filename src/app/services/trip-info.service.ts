@@ -1,49 +1,70 @@
 import { Injectable } from '@angular/core';
+import { TripStatus } from '../enums/tripStatus';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TripInfoService {
-  trip: any = null;
-  listofAvailableTrips: any[] = [];
-  driver: any = null;
-  Intrip: boolean = false;
+  private trip=new BehaviorSubject<any>(null);
+  trip$=this.trip.asObservable();
+  
+  private listofAvailableTrips=new BehaviorSubject<any[]>([]);
+  listofAvailableTrips$=this.listofAvailableTrips.asObservable();
+   
+  private driver =new BehaviorSubject<any>(null);
+  driver$=this.driver.asObservable();
+  
+  private Intrip =new BehaviorSubject<boolean>(false);
+  Intrip$=this.Intrip.asObservable();
 
-  updateTrip(tripData: any) {
-    this.trip = tripData;
-    console.log("Trip data updated:", this.trip);
+updateTrip(tripData: any) {
+    this.trip.next(tripData);
+    if(this.listofAvailableTrips.value){
+      this.clearListOfAvailableTrips();
+    }
+    console.log("trip data updated",this.trip.value);
+  }
+  updateTripCoords(Coords:any){
+    let tripData=this.trip.value;
+    tripData.CurrentCoordinates=Coords;
+    this.trip.next(tripData)
+    console.log("trip coords updated",this.trip.value);
   }
   updateDriver(driverData: any) {
-    this.driver = driverData;
-    console.log("Driver data updated:", this.driver);
+    this.driver.next(driverData);
+    const coordinates=driverData.coordinates;
+    this.updateTripCoords(coordinates);
+    console.log("driver accepted trip",this.driver.value);
+  }
+  updateDriverCoords(Coords:any){
+    let driverData=this.driver.value;
+    driverData.Coordinates=Coords;
+    this.driver.next(driverData);
+    this.updateTripCoords(Coords);
+    console.log("driver location updated",this.driver.value);
   }
   clearTrip() {
-    this.trip = null;
+    this.trip.next(null);
   }
   clearDriver() {
-    this.driver = null;
+    this.driver.next(null);
   }
   setInTrip(status: boolean) {
-    this.Intrip = status;
-    console.log("InTrip status updated:", this.Intrip);
+    this.Intrip.next(status);
+    console.log("trip status updated",this.Intrip.value);
   }
-  getTrip() {
-    return this.trip;
-  }
-  getDriver() {
-    return this.driver;
-  }
-  isInTrip() {
-    return this.Intrip;
-  }
-  getListOfAvailableTrips() {
-    return this.listofAvailableTrips;
-  }
+  get isInTripValue() {
+  return this.Intrip.value;
+}
+
   updateListOfAvailableTrips(trip: any) {
-    this.listofAvailableTrips.push(trip);
-    console.log("Available trips updated:", this.listofAvailableTrips);
+      const currentList = this.listofAvailableTrips.value;
+     const updatedList = [...currentList, trip]; 
+   this.listofAvailableTrips.next(updatedList);
+   console.log("Available trips updated:", this.listofAvailableTrips.value);
   }
   clearListOfAvailableTrips() {
-    this.listofAvailableTrips = [];
+    this.listofAvailableTrips.next( []);
   }
 }

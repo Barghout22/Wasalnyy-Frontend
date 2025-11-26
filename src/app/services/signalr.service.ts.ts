@@ -13,24 +13,53 @@ export class SignalrServiceTs {
   userRole:string="";
   private hubConnection!: signalR.HubConnection;
   public connectionStarted = false;
-  public pendingTripSubject = new BehaviorSubject<any>(null);
   constructor(private authService: AuthService,private tripInfoService:TripInfoService) {
     this.userRole=this.authService.getRole()!;
    }
   
   startConnection(): Promise<void> {
     return new Promise((resolve, reject) => {
-     if (this.connectionStarted) {
-      return resolve();
-     }
+
 
       this.hubConnection = new signalR.HubConnectionBuilder()
         .withUrl(this.hubUrl, {
-          accessTokenFactory: () => this.authService.getToken()!,
-          transport: signalR.HttpTransportType.LongPolling
-        })
+          accessTokenFactory: () => this.authService.getToken()!})
         .withAutomaticReconnect()
         .build();
+
+                  this.hubConnection.on("pendingTrip", (trip) => {
+                    this.tripInfoService.updateTrip(trip);
+            this.tripInfoService.setInTrip(true);
+          });
+          this.hubConnection.on('tripRequested',trip=>{
+            console.log("tripRequested",trip);
+            this.tripInfoService.updateTrip(trip)})
+          this.hubConnection.on('tripStarted', trip => {
+            this.tripInfoService.updateTrip(trip)
+          });
+          this.hubConnection.on('tripLocationUpdated', coords =>{
+            this.tripInfoService.updateTripCoords(coords)});
+          this.hubConnection.on('tripEnded', () =>{
+            this.tripInfoService.clearTrip();
+            this.tripInfoService.setInTrip(false);
+            this.tripInfoService.clearDriver();
+            this.tripInfoService.clearListOfAvailableTrips();
+          });      
+          this. hubConnection.on('tripAccepeted', driver=> {
+            this.tripInfoService.updateDriver(driver)});
+          if(this.userRole==="Rider"){
+          this. hubConnection.on('yourDriverLocationUpdated', coords=>this.tripInfoService.updateDriverCoords(coords));
+          }
+          else if(this.userRole==="Driver"){
+         this.hubConnection.on("availableTripsInZone", (trip) =>{
+          this.tripInfoService.updateListOfAvailableTrips(trip);
+        });
+        //  this.hubConnection.on("tripAccepeted", (trip) => {
+        //   this.tripInfoService.updateTrip(trip)
+        //   this.tripInfoService.setInTrip(true);
+        //  });
+          }
+
 
       this.hubConnection
         .start()
@@ -39,47 +68,7 @@ export class SignalrServiceTs {
           
           console.log('SignalR Connected');
           this.connectionStarted = true;
-          
-          
-          this.hubConnection.on("pendingTrip", (trip) => {
-            this.tripInfoService.updateTrip(trip);
-            this.tripInfoService.setInTrip(true);
-          });
-          this.hubConnection.on('tripStarted', trip => this.tripInfoService.updateTrip(trip));
-          this.hubConnection.on('tripEnded', () =>{
-            this.tripInfoService.clearTrip();
-            this.tripInfoService.setInTrip(false);
-            this.tripInfoService.clearDriver();
-            this.tripInfoService.clearListOfAvailableTrips();
-          });      
-          if(this.userRole==="Rider"){
-          this. hubConnection.on('tripAccepeted', driver=> this.tripInfoService.updateDriver(driver));
-          }
-          else if(this.userRole==="Driver"){
-         this.hubConnection.on("availableTripsInZone", (trip) =>this.tripInfoService.updateListOfAvailableTrips(trip));
-         this.hubConnection.on("tripAccepeted", (trip) => {
-          this.tripInfoService.updateTrip(trip)
-          this.tripInfoService.setInTrip(true);
-         });
-          }
-          
-          
-          
-          
-          
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-          resolve();
+             resolve();
         })
         .catch((err) => {
           console.error('Error while starting SignalR:', err);
@@ -87,9 +76,6 @@ export class SignalrServiceTs {
         });
     });
   }
-  // getHubConnection(): signalR.HubConnection {
-  // return this.hubConnection;
-  // }
 
   endConnection(): Promise<void> {
      return new Promise((resolve, reject) => {

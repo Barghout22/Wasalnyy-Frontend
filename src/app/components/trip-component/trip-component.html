@@ -9,20 +9,34 @@
               <h1>active trip:</h1>
             }       
             } 
-            
-          <h1>Your trip</h1>
-          <p>trip start location</p>
-          <p class="fw-bold">{{activeTrip.pickupCoordinates.Lat}},{{activeTrip.pickupCoordinates.Lng}}</p>
-          <p>trip end location</p>
-          <p class="fw-bold">{{activeTrip.distinationCoordinates.Lat}},{{activeTrip.pickupCoordinates.Lng}}</p>
-          <p>trip distance</p>
-          <p class="fw-bold">{{activeTrip.distanceKm}} Km</p>
-          <p>estimated trip duration</p>
-          <p class="fw-bold">{{activeTrip.durationMinutes}} minutes</p>
-          <p>price</p>
-          <p class="fw-bold">{{activeTrip.price|currency:'USD'}}</p>
-          <p>trip status</p>
-          <p class="fw-bold">{{activeTrip.tripStatus}}</p>
+            @else {
+              @if(activeTrip.tripStatus===0){
+                <h1>please confirn your trip request</h1>
+              }
+              @else if(activeTrip.tripStatus===1){
+                <h1>trip confirmed</h1>
+                <p>matching your request with nearby drivers</p>
+              }
+              @else if(activeTrip.tripStatus===2){
+                <h2>Driver accepted your trip</h2>
+                <p>they are on their way to meet you at pick up location location</p>
+              }
+              @else if(activeTrip.tripStatus===3){
+                <h3>Trip started</h3>
+                <p>you are on your way to destination</p>
+              }
+              
+            }
+                    
+          <p class="fw-bold"> pickup:{{activeTrip.pickupCoordinates.Lat}},{{activeTrip.pickupCoordinates.Lng}}</p>
+          <p class="fw-bold"> destinaiton:{{activeTrip.distinationCoordinates.Lat}},{{activeTrip.pickupCoordinates.Lng}}</p>
+         @if(activeTrip.tripStatus===0){
+
+           <p class="fw-bold"> distance:{{activeTrip.distanceKm}} Km</p>
+           
+           <p class="fw-bold">estimated  duration:{{activeTrip.durationMinutes}} minutes</p>
+           <p class="fw-bold">price:{{activeTrip.price|currency:'USD'}}</p>
+         } 
           @if(this.role==="Rider"){
             
             @if(activeTrip.tripStatus===0){

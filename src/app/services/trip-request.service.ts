@@ -3,16 +3,13 @@ import { HttpClient ,HttpHeaders} from '@angular/common/http';
 import { environment } from '../../enviroments/enviroment';
 import { AuthService } from '../auth/auth-service';
 import { TripRequestDto } from '../models/trip-request.dto';
-
 @Injectable({
   providedIn: 'root',
 })
-export class TripService {
-  apiUrl = `${environment.apiUrl}`;
-
+export class TripRequestService {
+ private apiUrl = `${environment.apiUrl}`;
   constructor(private http: HttpClient, private authService: AuthService) {}
-
-  requestTrip(dto: TripRequestDto) {
+  requestTrip(dto:TripRequestDto) {
     const token = this.authService.getToken();
 
     const formData = new FormData();
@@ -27,8 +24,17 @@ export class TripService {
     });
 
     const url = `${this.apiUrl}/Trip/Request`;
-    console.log('Request URL:', url, 'DTO:', dto);
-
     return this.http.post(url, formData, { headers });
+  }
+  confirmTripRequest(tripId:string){
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    console.log()
+    const url = `${this.apiUrl}/Trip/Confirm/${tripId}`;
+    return this.http.post(url,null, { headers });
+  
+
   }
 }

@@ -1,6 +1,7 @@
 import { Component ,EventEmitter,Input ,OnInit,Output} from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { AuthService } from '../../auth/auth-service';
+import { TripStatus } from '../../enums/tripStatus';
 
 @Component({
   selector: 'app-trip-component',
@@ -22,12 +23,15 @@ export class TripComponent implements OnInit {
     this.role=this.authService.getRole()
   }
   confirmRequest(){
+    this.activeTrip.tripStatus=TripStatus.Confirmed;
     this.confirmTripRequest.emit(this.activeTrip.id);
   }
   accepttrip(){
+    this.activeTrip.tripStatus=TripStatus.Accepted;
     this.acceptTrip.emit(this.activeTrip.id);
   }
   starttrip(){
+    this.activeTrip.tripStatus=TripStatus.Started;
     this.startTrip.emit(this.activeTrip.id);
   }
   endtrip(){

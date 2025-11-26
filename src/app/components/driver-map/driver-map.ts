@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DriverHubService } from '../../services/driverHub.service';
 import { FormsModule } from '@angular/forms';
-import { SignalrServiceTs } from '../../services/signalr.service.ts';
 import { TripStatus } from '../../enums/tripStatus';
 import { TripInfoService } from '../../services/trip-info.service';
 import { MapComponent } from '../map-component/map-component';
@@ -18,6 +17,7 @@ import { TripComponent } from '../trip-component/trip-component';
 export class DriverMap implements OnInit, OnDestroy{
 
   currentCoords:Coordinates|null=null;
+  pickupCoords:Coordinates|null=null;
   destinationCoords:Coordinates|null=null;
   tripId: string = "";
   available:boolean=false;
@@ -25,23 +25,28 @@ export class DriverMap implements OnInit, OnDestroy{
   tripStatus:TripStatus|null=null;
   activeTrip:any=null;
   availableTrips:any[]=[];
-  constructor(private driverHubService: DriverHubService, private signalrService: SignalrServiceTs
-    ,private tripInfoService:TripInfoService,private router:Router) { }
+  constructor(private driverHubService: DriverHubService,private tripInfoService:TripInfoService,private router:Router) { }
 ngOnInit(): void {
   this.tripInfoService.Intrip$.subscribe(intrip=>{
     this.intrip=intrip;
     this.available=intrip;
  })
   this.tripInfoService.trip$.subscribe(trip=>{
-    this.activeTrip=trip;
-    this.tripStatus=this.activeTrip.tripStatus;
-    this.currentCoords=this.activeTrip.pickupCoordinates;
-    this.destinationCoords=this.activeTrip.distinationCoordinates;
-    console.log(this.tripStatus);
+    if(trip){
+    this.activeTrip={...trip};
+    this.tripStatus=trip.tripStatus;
+    this.currentCoords={...trip.CurrentCoordinates};
+    this.pickupCoords={...trip.pickupCoordinates};
+    this.destinationCoords={...trip.distinationCoordinates};
+    console.log(this.currentCoords,this.pickupCoords,this.destinationCoords);  
+    }
   })
  this.tripInfoService.listofAvailableTrips$.subscribe(listOfAvailTrips=>{
-  this.availableTrips=listOfAvailTrips;
- })
+  if(listOfAvailTrips){
+ this.availableTrips=listOfAvailTrips.map(item=>item);
+
+  }
+  })
  
 }
   setLocation(coordinates:any){
@@ -67,29 +72,39 @@ ngOnInit(): void {
   }
 
   acceptTrip(id:string) {
-    this.driverHubService.AcceptTrip(id).subscribe(res => {
+    this.driverHubService.AcceptTrip(id).subscribe({next:res => {
+      this.activeTrip=this.availableTrips.find(trip=>trip.id===id);
+      this.activeTrip.tripStatus=TripStatus.Accepted;
+      this.tripInfoService.updateTrip(this.activeTrip);
       console.log('Trip accepted successfully',res);
-    }, err => {
+    },error: err => {
       console.error('Error accepting trip', err);
-    });
+    }});
 
   }
 
   startTrip(id:string) {
-    this.driverHubService.StartTrip(id)
-      .subscribe(res => {
+      this.activeTrip.tripStatus=TripStatus.Started;
+    this.driverHubService.StartTrip(id).subscribe({next:res => {
         console.log('Trip started successfully', res);
+      
+        this.tripInfoService.updateTrip(this.activeTrip);
       },
-        err => console.error('Error starting trip', err));
+       error: err => console.error('Error starting trip', err)});
   }
 
   // === End a trip ===
   endTrip(id:string) {
     this.driverHubService.EndTrip(id)
-      .subscribe(res =>{
+      .subscribe({next:res =>{
          console.log('Trip ended successfully', res);
+         this.activeTrip.tripStatus=TripStatus.Ended;
+        this.tripInfoService.clearTrip();
+         this.available=true;
+         this.intrip=false;
+         console.log(this.available,this.intrip);
         },
-        err => console.error('Error ending trip', err));
+        error:err => console.error('Error ending trip', err)});
   }
   SetAsUnavailable(){
     this.driverHubService.SetAsUnavailable().subscribe(res => {

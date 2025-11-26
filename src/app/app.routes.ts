@@ -18,7 +18,6 @@ import { RiderMap } from './components/rider-map/rider-map';
 import { Wallet } from './components/wallet/wallet';
 
 export const routes: Routes = [
-  // default route redirects based on login status
   { path: '', component: DashboardRedirectComponent },
   { path: 'login/:role', component: LoginComponent },
   { path: 'choose-user-type', component: ChooseUserComponent, pathMatch:'full' },
@@ -33,12 +32,14 @@ export const routes: Routes = [
 
   { path: 'reset-password', component: ResetPassword },
   { path: 'forgot-password', component: ForgotPassword },
+  
   { path:`driver-map`,component:DriverMap, canActivate: [AuthGuard], data: { role: 'Driver' }},
   { path:`rider-map`,component:RiderMap, canActivate: [AuthGuard], data: { role: 'Rider' }},
+  
   { path:'wallet',component:Wallet, canActivate: [AuthGuard]},
-
   { path: 'payment-failed', component: PaymentFailed },
   { path: 'payment-successful', component: PaymentSuccessful },
 
-  { path: '**', redirectTo: '' } // fallback to dashboard redirect
+
+  { path: '**', redirectTo: '' } 
 ];

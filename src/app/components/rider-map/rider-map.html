@@ -1,6 +1,7 @@
   <div class="container-wrapper d-flex vh-100 vw-100">
     @if(InTrip){
-      <app-trip-component [activeTrip]="activeTrip" (confirmTripRequest)="confirmTripRequest($event)" class="w-100"></app-trip-component>
+     
+        <app-trip-component [activeTrip]="activeTrip" (confirmTripRequest)="confirmTripRequest($event)" class="w-100"></app-trip-component>
     }@else{
       <app-rider-sidebar
    (originSelected)="handleOriginUpdate($event)"
@@ -11,29 +12,13 @@
 
 
     }
-    @if(!activeTrip ||activeTrip.tripStatus>3){
-       <app-map></app-map>
-    }
-    @else if(activeTrip.tripStatus===0||activeTrip.tripStatus===1){
 
-  <app-map class="col-9"
-   [firstPoint]="currentCoords"
-   [secondPoint]="destinationCoords"
-   ></app-map>
-    }
-    @else if (activeTrip.tripStatus==2){
-    <app-map class="col-9"
-   [firstPoint]="activeTrip.currentCoordinates"
-   [secondPoint]="currentCoords"
-   ></app-map>
-    }
-    @else if (activeTrip.tripStatus==3) {
-   <app-map class="col-9"
-   [firstPoint]="activeTrip.currentCoordinates"
-   [secondPoint]="destinationCoords"
-   ></app-map>
 
-    }
+    
+ <app-map class="col-9"
+  [firstPoint]="getFirstPoint()"
+  [secondPoint]="getSecondPoint()">
+</app-map>
 
   </div>
   

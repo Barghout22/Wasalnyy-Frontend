@@ -6,7 +6,9 @@ import {
   EventEmitter,
   Input,
   SimpleChanges,
-  OnChanges
+  OnChanges  ,
+  ViewChild,        // ✅ ADD THIS
+  ElementRef 
 } from '@angular/core';
 
 import * as L from 'leaflet';
@@ -25,6 +27,8 @@ export class MapComponent implements AfterViewInit, OnInit, OnChanges {
   @Input() secondPoint: Coordinates | null = null;
 
   @Output() locationEvent = new EventEmitter();
+    @ViewChild('mapContainer', { static: false }) 
+  mapContainer!: ElementRef;
 
   role: string | null = null;
 
@@ -34,6 +38,13 @@ export class MapComponent implements AfterViewInit, OnInit, OnChanges {
   secondPointMarker?: L.Marker|null;
   routeLayer?: L.Polyline | null;
 
+   carIcon = L.icon({
+  iconUrl: 'car.png',   // path to your car image
+  iconSize: [40, 40],                 // size of the icon [width, height]
+  iconAnchor: [20, 20],               // point of the icon which will correspond to marker's location (centered)
+  popupAnchor: [0, -20]               // point from which the popup should open relative to the iconAnchor
+});
+  
   constructor(private http: HttpClient, private authService: AuthService) {}
 
   ngOnInit() {
@@ -64,45 +75,69 @@ export class MapComponent implements AfterViewInit, OnInit, OnChanges {
       });
     }
   }
-
-ngOnChanges(changes: SimpleChanges): void {
-  if (!this.map) return;
-  if (changes['firstPoint'] && this.firstPoint) {
+  ngOnChanges(changes: SimpleChanges) {
+     if (!this.map) return;
+  if (changes['firstPoint']) {
     this.renderFirstPoint();
   }
-  if (changes['secondPoint'] && this.secondPoint) {
+  if (changes['secondPoint']) {
     this.renderSecondPoint();
   }
   this.tryDrawRoute();
 }
 
+
+  // private initMap() {
+  //   this.map = L.map('map').setView([30.0444, 31.2357], 13);
+
+  //   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  //     attribution: '&copy; OpenStreetMap contributors'
+  //   }).addTo(this.map);
+  // }
+
   private initMap() {
-    this.map = L.map('map').setView([30.0444, 31.2357], 13);
+  this.map = L.map(this.mapContainer.nativeElement)
+    .setView([30.0444, 31.2357], 13);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(this.map);
-  }
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(this.map);
+}
 
-  private renderFirstPoint() {
-    this.firstPointMarker?.remove();
+private renderFirstPoint() {
+  this.firstPointMarker?.remove();
 
-    if (!this.firstPoint) return;
+  if (!this.firstPoint || this.firstPoint.Lat == null || this.firstPoint.Lng == null)
+    return;
 
-    const lat = Number(this.firstPoint.Lat);
-    const lon = Number(this.firstPoint.Lng);
+  const lat = Number(this.firstPoint.Lat);
+  const lon = Number(this.firstPoint.Lng);
 
+  if (isNaN(lat) || isNaN(lon)) return;
+      console.log(this.firstPoint.Lat);
+    console.log(this.firstPoint.Lng)
+    console.log(lat);
+    console.log(lon);
 
-    this.firstPointMarker = L.marker([lat, lon]).addTo(this.map);
-  }
+  this.firstPointMarker = L.marker([lat, lon], { icon: this.carIcon }).addTo(this.map);
+}
 
   private renderSecondPoint() {
     this.secondPointMarker?.remove();
 
-    if (!this.secondPoint) return;
+
+     if (!this.secondPoint || this.secondPoint.Lat == null || this.secondPoint.Lng == null)
+    return;
 
     const lat = Number(this.secondPoint.Lat);
     const lon = Number(this.secondPoint.Lng);
+  
+    
+     if (isNaN(lat) || isNaN(lon)) return;
+    console.log(this.secondPoint.Lat);
+    console.log(this.secondPoint.Lng)
+    console.log(lat);
+    console.log(lon);
 
     this.secondPointMarker = L.marker([lat, lon]).addTo(this.map);
   }
@@ -114,6 +149,7 @@ ngOnChanges(changes: SimpleChanges): void {
       this.clearRoute();
     }
   }
+
 
   private drawRoute() {
     if (!this.firstPoint || !this.secondPoint) return;

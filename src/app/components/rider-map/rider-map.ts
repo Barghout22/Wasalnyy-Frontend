@@ -8,6 +8,7 @@ import { MapComponent } from '../map-component/map-component';
 import { TripInfoService } from '../../services/trip-info.service';
 import { LocationResult } from '../../models/location-result';
 import { TripComponent } from '../trip-component/trip-component';
+import { TripStatus } from '../../enums/tripStatus';
 
 @Component({
   selector: 'app-rider-map',
@@ -16,11 +17,12 @@ import { TripComponent } from '../trip-component/trip-component';
   styleUrls: ['./rider-map.css'],
 })
 export class RiderMap implements OnInit {
-
+  pickupCoords:Coordinates|null=null;
   currentCoords:Coordinates|null=null;
   destinationCoords:Coordinates|null=null;  
   paymentMethod: PaymentMethod | null = null;
   InTrip: boolean = false;
+  tripStatus:TripStatus|null=null;
   activeTrip:any|null=null;
   driver:any|null=null;
 
@@ -31,9 +33,20 @@ ngOnInit(): void {
   });
 
   this.tripInfoService.trip$.subscribe(trip => {
-     this.activeTrip = trip;
-     this.currentCoords=trip.pickupCoordinates;
-    this.destinationCoords=trip.distinationCoordinates;
+   
+     if(trip){
+        this.activeTrip = {...trip};
+        this.currentCoords={...trip.CurrentCoordinates};
+       this.pickupCoords={...trip.pickupCoordinates};
+      this.destinationCoords={...trip.distinationCoordinates};
+    this.tripStatus=trip.tripStatus; 
+
+    console.log(this.currentCoords);
+    console.log(this.pickupCoords);
+    console.log(this.destinationCoords);
+    }else {
+      this.tripStatus=null;
+    }
   });
   this.tripInfoService.driver$.subscribe(driver=>{
     this.driver=driver;
@@ -55,13 +68,23 @@ handleTripRequest(status:boolean){
   if(status){
     this.tripRequestService.requestTrip({PaymentMethod:this.paymentMethod!,
       PickupCoordinates:this.currentCoords!
-      ,DistinationCoordinates:this.destinationCoords!}).subscribe();
+      ,DistinationCoordinates:this.destinationCoords!}).subscribe(
+        {
+          next:res=>{
+            this.InTrip=true;
+            this.tripStatus=TripStatus.Requested;
+            console.log("trip requested",res);
+          }
+        }
+      );
   }
 }
 confirmTripRequest(tripId:any){
   this.tripRequestService.confirmTripRequest(tripId).subscribe({
 next: (res) => {
-    console.log('trip confirmed id :',tripId);
+     this.tripStatus=TripStatus.Confirmed;
+     console.log(this.tripStatus);
+     console.log(res);
   },
   error: (err) => {
         console.error('Error:', err);
@@ -72,5 +95,33 @@ next: (res) => {
   );
 }
 
+getFirstPoint() {
+  if (!this.InTrip) return null;
+  switch(this.tripStatus) {
+    case TripStatus.Requested:
+    case TripStatus.Confirmed:
+      return this.pickupCoords ?? null;
+    case TripStatus.Accepted:
+      case TripStatus.Started:
+      return this.currentCoords ?? null;
+    default:
+      return null;
+  }
+}
+
+getSecondPoint() {
+  if (!this.InTrip) return null;
+
+  switch(this.tripStatus) {
+    case TripStatus.Requested:
+    case TripStatus.Confirmed:
+     case TripStatus.Started:
+    return this.destinationCoords ?? null;
+    case TripStatus.Accepted:
+    return this.pickupCoords;
+    default:
+      return null;
+  }
+}
 
 }

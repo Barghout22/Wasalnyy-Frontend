@@ -1,5 +1,5 @@
 
-.map {
+.map-container,.map {
   flex: 1;
   height: 100vh;
 }

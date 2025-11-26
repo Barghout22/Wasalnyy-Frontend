@@ -1,13 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { LocationResult } from '../models/location-result';
 
-export interface LocationResult {
-  lat: string;
-  lon: string;
-  display_name: string;
-  place_id: string;
-}
 
 @Injectable({
   providedIn: 'root'

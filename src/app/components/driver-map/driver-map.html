@@ -15,9 +15,12 @@
     <button (click)="updateLocation()" class="w-100 btn btn-outline-dark">update location</button>
   }  
 @if(available &&!intrip){
+  @if(availableTrips.length>0){
+   <h1 class="title">available trips near you:</h1> 
+  }
+   
    @for( trip of availableTrips; track $index){
-    <h1 class="title">available trips near you:</h1>
-       <app-trip-component [activeTrip]="trip" (acceptTrip)="(acceptTrip($event))"></app-trip-component>
+   <app-trip-component [activeTrip]="trip" (acceptTrip)="(acceptTrip($event))"></app-trip-component>
 
   }
 }
@@ -27,5 +30,10 @@
 
 }
  </div>
-   <app-map (locationEvent)="setLocation($event)" [firstPoint]="currentCoords" [secondPoint]="destinationCoords"></app-map>
+<app-map 
+  (locationEvent)="setLocation($event)"
+  [firstPoint]="currentCoords"
+  [secondPoint]="intrip ? (activeTrip.tripStatus === 2 ? pickupCoords : destinationCoords) : null">
+</app-map>
+
   </div>
