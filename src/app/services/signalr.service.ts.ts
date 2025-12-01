@@ -27,23 +27,35 @@ export class SignalrServiceTs {
         .withAutomaticReconnect()
         .build();
 
-                  this.hubConnection.on("pendingTrip", (trip) => {
-                    this.tripInfoService.updateTrip(trip);
-            this.tripInfoService.setInTrip(true);
+          this.hubConnection.on("pendingTrip", (trip) => {
+          this.tripInfoService.updateTrip(trip);
+          this.tripInfoService.setInTrip(true);
           });
           this.hubConnection.on('tripRequested',trip=>{
             this.tripInfoService.updateTrip(trip)})
-           this.hubConnection.on('tripConfirmed',trip=>{
+
+          this.hubConnection.on('tripConfirmed',trip=>{
             this.tripInfoService.updateTrip(trip)})
-           
+          
+              this.hubConnection.on('tripCanceled',trip=>{
+             this.tripInfoService.updateTrip(trip);
+             this.tripInfoService.setInTrip(false);
+            this.tripInfoService.clearDriver();
+            this.tripInfoService.clearListOfAvailableTrips();
+              })
+              this.hubConnection.on("tripUnAvilable",tripId=>{
+                this.tripInfoService.removeTripFromListOfAvailableTrips(tripId);
+              })
+            
             
           this.hubConnection.on('tripStarted', trip => {
             this.tripInfoService.updateTrip(trip)
           });
           this.hubConnection.on('tripLocationUpdated', coords =>{
             this.tripInfoService.updateTripCoords(coords)});
-          this.hubConnection.on('tripEnded', () =>{
-            this.tripInfoService.clearTrip();
+
+          this.hubConnection.on('tripEnded', trip =>{
+            this.tripInfoService.updateTrip(trip);
             this.tripInfoService.setInTrip(false);
             this.tripInfoService.clearDriver();
             this.tripInfoService.clearListOfAvailableTrips();
