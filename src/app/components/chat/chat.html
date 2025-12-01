@@ -1,0 +1,54 @@
+<div class="chat-container">
+  <!-- Header -->
+  <div class="chat-header">
+    <div class="header-content">
+      <div class="bot-avatar">🤖</div>
+      <div class="header-info">
+        <h2>Chat Assistant</h2>
+        <span class="status">Online</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Messages Area -->
+  <div class="messages-container" #messagesContainer>
+    <div class="messages-wrapper">
+      <div 
+        *ngFor="let message of messages; trackBy: trackByMessageId"
+        class="message-row"
+        [class.user-row]="message.sender === 'user'"
+        [class.bot-row]="message.sender === 'bot'">
+        
+        <div class="message-bubble" [class.user-bubble]="message.sender === 'user'" [class.bot-bubble]="message.sender === 'bot'">
+          <p class="message-text">{{ message.text }}</p>
+          <span class="message-time">{{ message.timestamp | date:'shortTime' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input Area -->
+  <div class="input-container">
+    <div class="input-wrapper">
+      <input 
+        type="text" 
+        class="message-input"
+        [(ngModel)]="userInput"
+        (keypress)="handleKeyPress($event)"
+        placeholder="Type your message..."
+        autocomplete="off"
+        [disabled]="false">
+      
+      <button 
+        class="send-button" 
+        (click)="sendMessage()"
+        [disabled]="!userInput.trim()"
+        type="button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

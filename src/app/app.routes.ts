@@ -16,30 +16,46 @@ import { ForgotPassword } from './components/forgot-password/forgot-password';
 import { DriverMap } from './components/driver-map/driver-map';
 import { RiderMap } from './components/rider-map/rider-map';
 import { Wallet } from './components/wallet/wallet';
+import { Chat } from './components/chat/chat';
 
 export const routes: Routes = [
   { path: '', component: DashboardRedirectComponent },
   { path: 'login/:role', component: LoginComponent },
-  { path: 'choose-user-type', component: ChooseUserComponent, pathMatch:'full' },
+  { path: 'choose-user-type', component: ChooseUserComponent, pathMatch: 'full' },
   { path: 'register-driver', component: RegisterDriverComponent },
   { path: 'register-rider', component: RegisterRider },
   { path: 'face-scan/register/:userId', component: FaceScan },
   { path: 'face-scan/login', component: FaceScan },
 
-  { path: 'driver-dashboard', component: DriverDashboard, canActivate: [AuthGuard], data: { role: 'Driver' } },
-  { path: 'rider-dashboard', component: RiderDashboard, canActivate: [AuthGuard], data: { role: 'Rider' } },
-  { path: 'admin-dashboard', component: AdminDashboard, canActivate: [AuthGuard], data: { role: 'Admin' } },
+  {
+    path: 'driver-dashboard',
+    component: DriverDashboard,
+    canActivate: [AuthGuard],
+    data: { role: 'Driver' },
+  },
+  {
+    path: 'rider-dashboard',
+    component: RiderDashboard,
+    canActivate: [AuthGuard],
+    data: { role: 'Rider' },
+  },
+  {
+    path: 'admin-dashboard',
+    component: AdminDashboard,
+    canActivate: [AuthGuard],
+    data: { role: 'Admin' },
+  },
 
   { path: 'reset-password', component: ResetPassword },
   { path: 'forgot-password', component: ForgotPassword },
-  
-  { path:`driver-map`,component:DriverMap, canActivate: [AuthGuard], data: { role: 'Driver' }},
-  { path:`rider-map`,component:RiderMap, canActivate: [AuthGuard], data: { role: 'Rider' }},
-  
-  { path:'wallet',component:Wallet, canActivate: [AuthGuard]},
+
+  { path: `driver-map`, component: DriverMap, canActivate: [AuthGuard], data: { role: 'Driver' } },
+  { path: `rider-map`, component: RiderMap, canActivate: [AuthGuard], data: { role: 'Rider' } },
+
+  { path: 'wallet', component: Wallet, canActivate: [AuthGuard] },
+  { path: 'chat', component: Chat, canActivate: [AuthGuard] },
   { path: 'payment-failed', component: PaymentFailed },
   { path: 'payment-successful', component: PaymentSuccessful },
 
-
-  { path: '**', redirectTo: '' } 
+  { path: '**', redirectTo: '' },
 ];
