@@ -1,5 +1,4 @@
-  <div class="col-3 text-center w-100">
-        <div class="w-100 mx-auto m-2 align-items-center shadow round-2">
+ <div class="w-100 align-items-center shadow rounded-3 p-4">
             @if(this.role==="Driver"){
             @if(activeTrip.tripStatus==='Accepted'){
               <p>meet the rider at the pickup location</p>
@@ -42,22 +41,22 @@
             
             @if(activeTrip.tripStatus==='Requested'){
 
-                <button (click)="confirmRequest()" class="w-75 mx-auto my-2 btn btn-outline-dark rounded-2">confirm trip</button>
+                <button (click)="confirmRequest()" class="w-100 mx-auto my-2 btn btn-success rounded-3">confirm</button>
             }
-            <button class="w-75 mx-auto my-2 btn btn-outline-dark rounded-2" (click)="canceltrip()">cancel</button>
+            <button class="w-100 mx-auto my-2 btn btn-danger rounded-3" (click)="canceltrip()">cancel</button>
           }
          @else if(this.role==="Driver"){
             @if (activeTrip.tripStatus==='Confirmed'){
-               <button (click)="accepttrip()" class="w-75 mx-auto my-2 btn btn-outline-dark rounded-2">accept trip</button>
+               <button (click)="accepttrip()" class="w-100 mx-auto my-2 btn btn-success rounded-3">accept</button>
             }
              @else if(activeTrip.tripStatus==='Accepted'){
-          <button (click)="starttrip()" class="w-75 mx-auto my-2 btn btn-outline-dark rounded-2">start trip</button>
+          <button (click)="starttrip()" class="w-100 mx-auto my-2 btn btn-info rounded-3">start </button>
         }
         @else if(activeTrip.tripStatus==='Started'){
-          <button (click)="endtrip()" class="w-75 mx-auto my-2 btn btn-outline-dark rounded-2">end trip</button>
+          <button (click)="endtrip()" class="w-100 mx-auto my-2 btn btn-dark rounded-3">end </button>
         }
+         <button class="w-100 mx-auto my-2 btn btn-danger rounded-3" (click)="canceltrip()">cancel</button>
           }
           
           
         </div>
-      </div>

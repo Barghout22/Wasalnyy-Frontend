@@ -1,9 +1,9 @@
 import { Injectable, OnInit } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { AuthService } from '../auth/auth-service';
-import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../enviroments/enviroment';
 import { TripInfoService } from './trip-info.service';
+import { AccountDataService } from './account-data.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +13,7 @@ export class SignalrServiceTs {
   userRole:string="";
   private hubConnection!: signalR.HubConnection;
   public connectionStarted = false;
-  constructor(private authService: AuthService,private tripInfoService:TripInfoService) {
+  constructor(private authService: AuthService,private tripInfoService:TripInfoService,private accountDataService:AccountDataService) {
     this.userRole=this.authService.getRole()!;
    }
   
@@ -28,8 +28,15 @@ export class SignalrServiceTs {
         .build();
 
           this.hubConnection.on("pendingTrip", (trip) => {
-          this.tripInfoService.updateTrip(trip);
+            const driverId=trip.driverId;
+            console.log(driverId);
+            this.tripInfoService.updateTrip(trip);
           this.tripInfoService.setInTrip(true);
+          this.accountDataService.getDriverData(driverId).subscribe({next:res=>{
+            this.tripInfoService.updateDriver(res)
+          }
+        ,error:err=>{console.error(err)}
+        })
           });
           this.hubConnection.on('tripRequested',trip=>{
             this.tripInfoService.updateTrip(trip)})

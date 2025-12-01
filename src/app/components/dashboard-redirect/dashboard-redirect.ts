@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../auth/auth-service';
 import { SignalrServiceTs } from '../../services/signalr.service.ts';
 import { TripInfoService } from '../../services/trip-info.service';
+import { AccountDataService } from '../../services/account-data.service';
 
 @Component({
   selector: 'app-dashboard-redirect',
@@ -12,7 +13,7 @@ import { TripInfoService } from '../../services/trip-info.service';
 export class DashboardRedirectComponent implements OnInit {
 
   constructor(private router: Router,private authService: AuthService
-    ,private signalrService: SignalrServiceTs,private tripInfoService: TripInfoService
+    ,private signalrService: SignalrServiceTs,private tripInfoService: TripInfoService,private accountService:AccountDataService
   ) {}
 
   ngOnInit(): void {
@@ -20,6 +21,7 @@ export class DashboardRedirectComponent implements OnInit {
     const role = this.authService.getRole()?.toLowerCase();
    if(!token||!role) this.router.navigate(['/choose-user-type']);
    else {
+    console.log(this.accountService.getUserData());
      this.signalrService.startConnection().then(() => {
       setTimeout(()=>{
        if(this.tripInfoService.isInTripValue) {
@@ -28,7 +30,7 @@ export class DashboardRedirectComponent implements OnInit {
            this.router.navigate([`/${role}-dashboard`]);
         } 
 
-      },200);
+      },3000);
 
      });
 

@@ -14,7 +14,8 @@ h2 {
   color: #2b2b2b;
 }
 
-input {
+input,
+select {
   width: 100%;
   margin-bottom: 12px;
   padding: 10px;
@@ -25,7 +26,8 @@ input {
   transition: border-color 0.2s ease;
 }
 
-input:focus {
+input:focus,
+select:focus {
   border-color: #4a90e2;
 }
 

@@ -17,6 +17,12 @@
       <input [(ngModel)]="driver.PhoneNumber" name="phoneNumber" placeholder="Phone Number" required />
       <input [(ngModel)]="driver.Password" name="password" type="password" placeholder="Password" required />
       <input [(ngModel)]="driver.License" name="license" placeholder="License Number" required />
+      <label for="DateOfBirth"> Date of birth</label>
+      <input [(ngModel)]="driver.DateOfBirth" type="date" name="DateOfBirth" placeholder="Date of birth" required />
+      <label>Gender</label>
+      <select [(ngModel)]="driver.Gender" name="type" required>
+        <option *ngFor="let gender of genders" [ngValue]="gender.id">{{ gender.name }}</option>
+      </select>
     </div>
 
     <div class="section">

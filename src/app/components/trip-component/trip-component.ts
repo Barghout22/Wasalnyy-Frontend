@@ -22,6 +22,10 @@ export class TripComponent implements OnInit {
    constructor(private authService:AuthService){}
   ngOnInit(): void {
     this.role=this.authService.getRole()
+    const audio = new Audio('audio/notification.mp3');
+    if(this.activeTrip.tripStatus!=="Requested"){
+      audio.play();
+    }
   }
   confirmRequest(){
         this.confirmTripRequest.emit(this.activeTrip.id);

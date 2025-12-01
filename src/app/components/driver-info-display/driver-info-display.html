@@ -1,0 +1,8 @@
+<div class="d-flex flex-column justify-content-around w-100 fw-bold text-center p-2">
+ <p>{{driver.fullName}} Accepted your trip</p>
+ <p>meet them at the pick up location</p>
+ <p>car: {{driver.vehicle.model}} {{driver.vehicle.make}} {{driver.vehicle.color}},P.No:{{driver.vehicle.plateNumber}}</p>
+
+
+<button class="w-100 mx-auto my-2 btn btn-danger rounded-3" (click)="canceltrip()">cancel</button>
+</div>
