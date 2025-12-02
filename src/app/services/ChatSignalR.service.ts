@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { Subject, BehaviorSubject } from 'rxjs';
 import { environment } from '../../enviroments/enviroment';
+import { AuthService } from '../auth/auth-service';
+import {MessageFromSignleR} from '../models/MessageFromSignleR';
 
 @Injectable({
   providedIn: 'root'
@@ -15,16 +17,25 @@ export class ChatSignalRService {
   // Connection status - use BehaviorSubject to track current state
   public connectionEstablished = new BehaviorSubject<boolean>(false);
 
-  constructor() {}
+  constructor(private authService: AuthService) {}
 
-  public startConnection( accessToken?: string): Promise<void> {
+  public startConnection(): Promise<void> {
     // Build the connection
     const connectionBuilder = new signalR.HubConnectionBuilder()
       .withUrl(this.hubUrl, {
         skipNegotiation: true,
         transport: signalR.HttpTransportType.WebSockets,
-        accessTokenFactory: () => accessToken || ''
+       accessTokenFactory: () => {
+          const token = this.authService.getToken();
+          if (!token || this.authService.isTokenExpired(token)) {
+            console.warn('Token expired or missing. Logging out...');
+            this.authService.logout();
+            return ''; // Return empty token, connection will fail
+          }
+          return token;
+        }
       })
+
       .withAutomaticReconnect({
         nextRetryDelayInMilliseconds: retryContext => {
           // Retry after 0, 2, 10, 30 seconds
@@ -71,10 +82,18 @@ export class ChatSignalRService {
 
   private registerOnServerEvents(): void {
     // Listen for "receivemessage" event from server
-    this.hubConnection.on('receivemessage', (message: string) => {
+    this.hubConnection.on('receivemessage', (message: MessageFromSignleR) => {
       console.log('Message received from server:', message);
-      this.messageReceived.next(message);
+      this.messageReceived.next(message.content);
     });
+
+// Listen for "messagesent" event from server
+    this.hubConnection.on('messagesent', (message: MessageFromSignleR) => {
+      console.log('Message received from server:', message);
+      this.messageReceived.next(message.content);
+    });
+
+
   }
 
   public sendMessage(receiverId: string, message: string): Promise<void> {

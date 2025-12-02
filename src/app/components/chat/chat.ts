@@ -31,7 +31,7 @@ export class Chat implements OnInit, AfterViewChecked, OnDestroy {
   private messageSubscription?: Subscription;
   private connectionSubscription?: Subscription;
   isConnected: boolean = false;
-  receiverId: string ='34dc46bb-3f41-46f0-86d8-810593f5166f'; // Replace with actual receiver ID
+  receiverId: string ='2b02c519-6571-4dd6-8fb5-185e9f3c69c5'; // Replace with actual receiver ID
 
   constructor(private signalRService: ChatSignalRService,private authService: AuthService ) {}
 
@@ -64,17 +64,7 @@ export class Chat implements OnInit, AfterViewChecked, OnDestroy {
 
   private connectToSignalR(): void {
     
-    // Optional: Add your JWT token if using authentication
-  const token = this.authService.getToken() ?? undefined;
-    if (!token) {
-    this.addBotMessage('Authentication required. Please log in.');
-    console.error('No authentication token available');
-    return;
-  }
-    console.log('Connecting with token:', token.substring(0, 50) + '...');
-
-
-    this.signalRService.startConnection( token)
+    this.signalRService.startConnection()
       .then(() => {
         console.log('Connected to SignalR Hub');
       })
