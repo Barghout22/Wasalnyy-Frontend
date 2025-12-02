@@ -1,63 +1,73 @@
-  <div class="col-3 text-center w-100">
-        <div class="w-100 mx-auto m-2 align-items-center shadow round-2">
+ <div class="align-items-center text-center shadow p-4">
             @if(this.role==="Driver"){
-            @if(activeTrip.tripStatus==='Accepted'){
-              <p>meet the rider at the pickup location</p>
+            @if(activeTrip.tripStatus==="Confirmed"){
+           <p class="fw-bold">{{activeTrip.pickUpName}}</p>
+           <p>to</p>
+           <p class="fw-bold">{{activeTrip.destinationName}}</p>
+
+           <p class="fw-bold"> distance: {{activeTrip.distanceKm.toFixed(2)}} Km</p>
+           
+           <p class="fw-bold">duration: {{activeTrip.durationMinutes.toFixed(2)}} minutes</p>
+           <p class="fw-bold">price:{{activeTrip.price.toFixed(1)|currency:'USD'}}</p>
+
+            }
+              @else if(activeTrip.tripStatus==='Accepted'){
+              <p>meet the rider at </p>
+              <p class="fw-bold">  {{activeTrip.pickUpName}}</p>
               
             }
             @else if(activeTrip.tripStatus==='Started'){
-              <p>trip started</p>
-              <p>you are on your way</p>
+          <p>you are on your way to </p>
+           <p class="fw-bold"> {{activeTrip.destinationName}}</p>
             }       
             } 
             @else {
               @if(activeTrip.tripStatus==='Requested'){
-                <h1>please confirn your trip request</h1>
               }
               @else if(activeTrip.tripStatus==='Confirmed'){
-                <h1>trip confirmed</h1>
                 <p>matching your request with nearby drivers</p>
+                <div class="scan-bar"></div>
+
               }
-              @else if(activeTrip.tripStatus==='Accepted'){
-                <h2>Driver accepted your trip</h2>
-                <p>they are on their way to meet you at pick up location location</p>
-              }
+
               @else if(activeTrip.tripStatus==='Started'){
-                <h3>Trip started</h3>
-                <p>you are on your way to destination</p>
+          
+           <p>you are on your way to </p>
+           <p class="fw-bold"> {{activeTrip.destinationName}}</p>
+
               }
               
             }
-                    
-          <p class="fw-bold"> pickup:{{activeTrip.pickUpName}}</p>
-          <p class="fw-bold"> destinaiton:{{activeTrip.destinationName}}</p>
-         @if(activeTrip.tripStatus==='Requested'){
+           @if(activeTrip.tripStatus==='Requested'){
+           <p class="fw-bold">{{activeTrip.pickUpName}}</p>
+           <p>to</p>
+           <p class="fw-bold">{{activeTrip.destinationName}}</p>
 
-           <p class="fw-bold"> distance:{{activeTrip.distanceKm}} Km</p>
+           <p class="fw-bold"> distance: {{activeTrip.distanceKm.toFixed(2)}} Km</p>
            
-           <p class="fw-bold">estimated  duration:{{activeTrip.durationMinutes}} minutes</p>
-           <p class="fw-bold">price:{{activeTrip.price|currency:'USD'}}</p>
+           <p class="fw-bold">duration: {{activeTrip.durationMinutes.toFixed(2)}} minutes</p>
+           <p class="fw-bold">price:{{activeTrip.price.toFixed(1)|currency:'USD'}}</p>
          } 
           @if(this.role==="Rider"){
             
             @if(activeTrip.tripStatus==='Requested'){
 
-                <button (click)="confirmRequest()" class="w-75 mx-auto my-2 btn btn-outline-dark rounded-2">confirm trip</button>
+                <button (click)="confirmRequest()" class="w-100 mx-auto my-2 btn btn-success rounded-3">confirm request</button>
             }
-            <button class="w-75 mx-auto my-2 btn btn-outline-dark rounded-2" (click)="canceltrip()">cancel</button>
+            <button class="w-100 mx-auto my-2 btn btn-danger rounded-3" (click)="canceltrip()">cancel</button>
           }
          @else if(this.role==="Driver"){
             @if (activeTrip.tripStatus==='Confirmed'){
-               <button (click)="accepttrip()" class="w-75 mx-auto my-2 btn btn-outline-dark rounded-2">accept trip</button>
+               <button (click)="accepttrip()" class="w-100 mx-auto my-2 btn btn-success rounded-3">accept request</button>
             }
              @else if(activeTrip.tripStatus==='Accepted'){
-          <button (click)="starttrip()" class="w-75 mx-auto my-2 btn btn-outline-dark rounded-2">start trip</button>
+          <button (click)="starttrip()" class="w-100 mx-auto my-2 btn btn-info rounded-3">start </button>
         }
         @else if(activeTrip.tripStatus==='Started'){
-          <button (click)="endtrip()" class="w-75 mx-auto my-2 btn btn-outline-dark rounded-2">end trip</button>
+          <button (click)="endtrip()" class="w-100 mx-auto my-2 btn btn-dark rounded-3">end </button>
         }
+         <button class="w-100 mx-auto my-2 btn btn-danger rounded-3" (click)="canceltrip()">cancel</button>
           }
           
           
         </div>
-      </div>

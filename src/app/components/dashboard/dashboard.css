@@ -1,0 +1,48 @@
+@font-face {
+  font-family: 'Playwrite';
+  src: url('/fonts/Playwrite.ttf') format('truetype');
+  font-weight: 100 1000;
+  font-style: normal;
+  font-display: swap;
+}
+.header-container{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    box-shadow: 2px 2px 6px grey;
+   background-color:#1ca571 ;
+}
+.page-header{
+ font-family: "Playwrite", sans-serif; 
+ color: white;
+}
+.dashboard-container{
+
+    background-color: #1ca571;
+    color: rgba(197, 193, 193, 0.796);
+    font-size: x-large;
+    padding: 20px;
+    height: 100px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    transition: all 0.5s ease;
+}
+.dashboard-container:hover{
+    box-shadow: 2px 2px 6px grey;
+    height: 150px;
+    color:white;
+    width: 100%;
+}
+img{
+    height:100px ;
+    opacity: 0;
+    transition: all 0.6s ease;
+}
+.dashboard-container:hover img{
+    height: 150px;
+    opacity: 1;
+}

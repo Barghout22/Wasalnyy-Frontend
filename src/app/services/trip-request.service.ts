@@ -17,8 +17,8 @@ export class TripRequestService {
     formData.append('PickupCoordinates.Lat', dto.PickupCoordinates.Lat.toString());
     formData.append('PickupCoordinates.Lng', dto.PickupCoordinates.Lng.toString());
     formData.append('PickUpName',dto.PickupCoordinates.locationName!);
-    formData.append('DistinationCoordinates.Lat', dto.DistinationCoordinates.Lat.toString());
-    formData.append('DistinationCoordinates.Lng', dto.DistinationCoordinates.Lng.toString());
+    formData.append('DestinationCoordinates.Lat', dto.DistinationCoordinates.Lat.toString());
+    formData.append('DestinationCoordinates.Lng', dto.DistinationCoordinates.Lng.toString());
     formData.append('DestinationName',dto.DistinationCoordinates.locationName!);
 
     const headers = new HttpHeaders({

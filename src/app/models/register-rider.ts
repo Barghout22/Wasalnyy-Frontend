@@ -4,4 +4,6 @@ export interface RegisterRiderDto {
   phoneNumber: string;
   password: string;
   provider?: string;
+  DateOfBirth:Date;
+  Gender:number;
 }

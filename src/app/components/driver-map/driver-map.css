@@ -5,24 +5,12 @@
   overflow: hidden;
 }
 
-app-driver-sidebar {
-  width: 350px;  /* fixed sidebar width */
-  background: white;
-}
+
 
 app-map {
   flex-grow: 1;   /* map takes the remaining space */
   height: 100%;
   z-index: 0;
-}
-.sidebar {
-  width: 350px;
-  background: white;
-  padding: 20px;
-  border-right: 1px solid #ccc;
-  overflow-y: auto;
-  box-shadow: 2px 0px 5px rgba(0,0,0,0.1);
-  z-index: 999;
 }
 
 .title {

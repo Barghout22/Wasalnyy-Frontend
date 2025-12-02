@@ -6,6 +6,7 @@ import { LoginDto } from '../models/login';
 import { RegisterDriverDto } from '../models/register-driver';
 import { RegisterRiderDto } from '../models/register-rider';
 import { Router } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -55,5 +56,21 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
     this.router.navigate(['choose-user-type']);
+  }
+  CheckTokenExpired(token:string){
+    if(!token) return true;
+
+    try{
+
+      const jwtDecoded=jwtDecode(token);
+  
+      if(!jwtDecoded.exp) return true;
+  
+      const expiry = jwtDecoded.exp * 1000;  
+      return Date.now() > expiry;
+    }
+    catch{
+      return true;
+    }
   }
 }

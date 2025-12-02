@@ -8,6 +8,7 @@ import { EngineType } from '../../enums/EngineType';
 import { RegisterDriverDto } from '../../models/register-driver';
 import { AuthService } from '../../auth/auth-service';
 import { Router } from '@angular/router';
+import { Gender } from '../../enums/gender';
 
 
 @Component({
@@ -36,11 +37,16 @@ export class RegisterDriverComponent {
   engineTypes = Object.entries(EngineType)
     .filter(([key, value]) => typeof value === 'number')
     .map(([key, value]) => ({ id: value as number, name: key }));
+  
+  genders = Object.entries(Gender)
+    .filter(([key, value]) => typeof value === 'number')
+    .map(([key, value]) => ({ id: value as number, name: key }));
 
   driver: RegisterDriverDto = {
     FullName: '',
     Email: '',
-
+    Gender:0,
+    DateOfBirth:new Date(),
     PhoneNumber: '',
     Password: '',
     License: '',

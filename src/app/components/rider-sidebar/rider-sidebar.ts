@@ -47,8 +47,6 @@ onChangePaymentMethod(event: any) {
 requestTrip() {
   this.tripRequested.emit(true);
 }
-redirectToHomepge(){
-  this.router.navigate(['/rider-dashboard']);
-}
+
 
 }

@@ -4,13 +4,14 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   selector: 'app-message-box',
   imports: [],
   templateUrl: './message-box.html',
-  styles: ``,
+  styleUrl: `./message-box.css`,
 })
 export class MessageBox {
   @Input() errorMessage:string|null=null;
   @Output() acknowledgeError=new EventEmitter();
+
   acknowledge(){
-    this.acknowledgeError.emit();
+    this.acknowledgeError.emit(true);
   }
 
 }

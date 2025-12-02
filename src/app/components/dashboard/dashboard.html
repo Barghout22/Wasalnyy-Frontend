@@ -1,0 +1,22 @@
+<div class="header-container">
+        <h3 class="page-header">Wasalnyy</h3>
+        <button (click)="logout()" class="btn btn-outline-light" style="width: 150px; margin-right: 20px;">Sign Out</button>
+
+</div>
+
+<div class="container d-flex p-2 align-items-start justify-content-around my-5 flex-column gap-4">
+    <h3>Welcome, {{userFirstName}}</h3>
+
+        <div  class="dashboard-container fw-bold rounded-2 " (click)="goToRideDashboard()"><p>{{userMapString}}</p>
+        <img src="images/trip-icon.png" alt="">
+        </div>
+        <div  class="dashboard-container fw-bold rounded-2 "><p>View your profile</p> 
+        <img src="images/profile-icon.png" alt="">
+        </div>
+        <div  class="dashboard-container fw-bold rounded-2 " (click)="goToWallet()"><p>Go to your E-Wallet</p>
+        <img src="images/wallet-icon2.png" alt="">
+        </div>
+        <div  class="dashboard-container fw-bold rounded-2 "><p>View past trips</p>
+        <img src="images/history-icon.png" alt="">
+        </div>
+</div>

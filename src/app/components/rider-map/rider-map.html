@@ -1,13 +1,29 @@
   <div class="container-wrapper d-flex vh-100 vw-100 position-relative">
-    @if(errorState){
 
-      <app-message-box class="vw-100 vh-100 z-3"[errorMessage]="errorMessage" (acknowledge)="acknowledgeError()" ></app-message-box>
-    }
+      <button (click)="redirectToHomepge()" class="btn btn-primary my-2 mx-5 position-absolute z-2"> back to homepage</button>
+
+     @if(errorState){
+        <app-message-box class="z-4"[errorMessage]="errorMessage" (acknowledgeError)="acknowledgeError()" ></app-message-box>
+     } 
+    @if(messageState){
+              <app-message-box class="z-3"[errorMessage]="message" (acknowledgeError)="acknowledgeError()" ></app-message-box>
+      }
+      @else{
+        @if(activeTrip &&activeTrip.tripStatus==="Ended"){
+            <app-review-box class=" z-3" [tripId]="activeTrip.id" (submitReview)="submitReview($event)"></app-review-box>
+        }
+      }
     @if(InTrip){
+      @if(activeTrip.tripStatus==="Accepted"){
+        <app-driver-info-display [driver]="driver" [tripId]="activeTrip.id" (cancelTrip)="cancelTrip($event)" class=" position-absolute z-2 bg-white rounded-3" style="margin-top: 50px; margin-left: 45px; width: 350px;" ></app-driver-info-display>
+      }
+      @else {
+        <app-trip-component [activeTrip]="activeTrip" (confirmTripRequest)="confirmTripRequest($event)" (cancelTrip)="cancelTrip($event)" class="position-absolute z-2 bg-white rounded-3" style="margin-top: 50px; margin-left: 45px;width: 350px;" ></app-trip-component>
+
+      }
      
-        <app-trip-component [activeTrip]="activeTrip" (confirmTripRequest)="confirmTripRequest($event)" (cancelTrip)="cancelTrip($event)" class="w-100 z-2 "></app-trip-component>
-    }@else{
-      <app-rider-sidebar class="z-2"
+            }@else{
+      <app-rider-sidebar class="z-2 position-absolute" style="margin-top: 50px; margin-left: 45px; width: 350px;" 
    (originSelected)="handleOriginUpdate($event)"
    (destinationSelected)="handleDestinationUpdate($event)"
    (paymentMethodSelected)="handlePaymenMethodUpdate($event)"
@@ -19,7 +35,7 @@
 
 
     
- <app-map class="col-9"
+ <app-map class="vw-100 vh-100 z-0 flex-grow-1 "
   [firstPoint]="getFirstPoint()"
   [secondPoint]="getSecondPoint()">
 </app-map>

@@ -45,6 +45,12 @@ export class MapComponent implements AfterViewInit, OnInit, OnChanges {
   popupAnchor: [0, -20]               
 });
 
+   pinIcon = L.icon({
+  iconUrl: 'pin.png',
+  iconSize: [40, 40], 
+  iconAnchor: [20, 20],               
+  popupAnchor: [0, -20]               
+});
   
   constructor(private http: HttpClient, private authService: AuthService) {}
 
@@ -126,7 +132,7 @@ private renderFirstPoint() {
      if (isNaN(lat) || isNaN(lon)) return;
 
 
-    this.secondPointMarker = L.marker([lat, lon]).addTo(this.map);
+    this.secondPointMarker = L.marker([lat, lon],{icon:this.pinIcon}).addTo(this.map);
   }
 
   private tryDrawRoute() {

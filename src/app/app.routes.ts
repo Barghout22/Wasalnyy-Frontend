@@ -4,8 +4,7 @@ import { RegisterDriverComponent } from './components/register/register';
 import { RegisterRider } from './components/register-rider/register-rider';
 import { ChooseUserComponent } from './components/reg-option/reg-option';
 import { FaceScan } from './components/face-scan/face-scan';
-import { DriverDashboard } from './components/driver-dashboard/driver-dashboard';
-import { RiderDashboard } from './components/rider-dashboard/rider-dashboard';
+import { Dashboard } from './components/dashboard/dashboard';
 import { PaymentSuccessful } from './components/payment-successful/payment-successful';
 import { PaymentFailed } from './components/payment-failed/payment-failed';
 import { AdminDashboard } from './components/admin-dashboard/admin-dashboard';
@@ -27,24 +26,8 @@ export const routes: Routes = [
   { path: 'face-scan/register/:userId', component: FaceScan },
   { path: 'face-scan/login', component: FaceScan },
 
-  {
-    path: 'driver-dashboard',
-    component: DriverDashboard,
-    canActivate: [AuthGuard],
-    data: { role: 'Driver' },
-  },
-  {
-    path: 'rider-dashboard',
-    component: RiderDashboard,
-    canActivate: [AuthGuard],
-    data: { role: 'Rider' },
-  },
-  {
-    path: 'admin-dashboard',
-    component: AdminDashboard,
-    canActivate: [AuthGuard],
-    data: { role: 'Admin' },
-  },
+  { path: 'dashboard', component: Dashboard, canActivate: [AuthGuard] },
+  { path: 'admin-dashboard', component: AdminDashboard, canActivate: [AuthGuard], data: { role: 'Admin' } },
 
   { path: 'reset-password', component: ResetPassword },
   { path: 'forgot-password', component: ForgotPassword },

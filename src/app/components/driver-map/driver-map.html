@@ -1,41 +1,50 @@
   <div class="container-wrapper position-relative">
-      @if(errorState){
+  <button (click)="redirectToHomepge()" class="btn btn-primary my-2 mx-5 position-absolute z-2"> back to homepage</button>
+     @if(errorState){
+        <app-message-box class="z-4"[errorMessage]="errorMessage" (acknowledgeError)="acknowledgeError()" ></app-message-box>
+     } 
+    @if(messageState){
+              <app-message-box class="z-3"[errorMessage]="message" (acknowledgeError)="acknowledgeError()" ></app-message-box>
+      }
+      @else{
+        @if(activeTrip &&activeTrip.tripStatus==="Ended"){
+            <app-review-box class=" z-3" [tripId]="activeTrip.id" (submitReview)="submitReview($event)"></app-review-box>
+        }
+      }
 
-      <app-message-box class="vw-100 vh-100 z-3"[errorMessage]="errorMessage" (acknowledge)="acknowledgeError()" ></app-message-box>
-    }
-
-<div class="sidebar text-center z-2">
-<button (click)="redirectToHomepge()" class="btn btn-outline-dark w-100 my-3"> back to homepage</button>
+<div class="sidebar text-center z-2 position-absolute bg-white p-3 rounded-3" style="margin-top: 50px; margin-left: 45px;width: 350px;">
    @if (!available) {
     <h1 class="title">select location on map and set yourself available to start receiving ride requests</h1>
-  <button (click)="setAvailable()" class="w-100 mx-auto my-2 btn btn-outline-dark align-center">
+  <button (click)="setAvailable()" class="w-100 mx-auto my-2 btn btn-outline-success align-center">
     set available   </button>
 
    }
   @else {
-    @if(intrip) {
-      
-      <h1>Active trip</h1>
-    }
     <h1 class="title">select location on map to update your live location</h1>
-    <button (click)="updateLocation()" class="w-100 btn btn-outline-dark">update location</button>
+    <button (click)="updateLocation()" class="w-100 btn btn-info ">update location</button>
+    @if(!intrip) {
+      <button (click)="SetAsUnavailable()" class="w-100 btn btn-danger mt-2">Go offline</button>
+    }
   }  
-@if(available &&!intrip){
+
+ </div>
+
+ @if(available &&!intrip){
 
    @for( trip of availableTrips; track $index){
-       <h1 class="title">trip request near you:</h1> 
-
-   <app-trip-component [activeTrip]="trip" (acceptTrip)="(acceptTrip($event))"></app-trip-component>
+ <app-trip-component [activeTrip]="trip" (cancelTrip)="cancelTrip($event)" (acceptTrip)="acceptTrip($event)" class="position-absolute z-2 bg-white rounded-3" style="margin-top: 260px;margin-left: 45px;width: 350px;"></app-trip-component>
 
   }
 }
 @else if (intrip){
-   <app-trip-component [activeTrip]="activeTrip" (startTrip)="startTrip($event)" (endTrip)="endTrip($event)"></app-trip-component>
+   <app-trip-component [activeTrip]="activeTrip" (cancelTrip)="cancelTrip($event)" (startTrip)="startTrip($event)" (endTrip)="endTrip($event)" class="position-absolute z-2
+    bg-white rounded-3"  style="margin-top: 235px; margin-left: 45px; width: 350px;"></app-trip-component>
 
 
 }
- </div>
+
 <app-map 
+class="w-100 h-100"
   (locationEvent)="setLocation($event)"
   [firstPoint]="currentCoords"
   [secondPoint]="intrip ? (activeTrip.tripStatus === 'Accepted' ? pickupCoords : destinationCoords) : null">

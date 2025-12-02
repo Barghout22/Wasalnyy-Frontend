@@ -1,9 +1,9 @@
 import { Injectable, OnInit } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { AuthService } from '../auth/auth-service';
-import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../enviroments/enviroment';
 import { TripInfoService } from './trip-info.service';
+import { AccountDataService } from './account-data.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,21 +13,24 @@ export class SignalrServiceTs {
   userRole: string = '';
   private hubConnection!: signalR.HubConnection;
   public connectionStarted = false;
-  constructor(private authService: AuthService, private tripInfoService: TripInfoService) {
+  constructor(
+    private authService: AuthService,
+    private tripInfoService: TripInfoService,
+    private accountDataService: AccountDataService
+  ) {
     this.userRole = this.authService.getRole()!;
   }
 
   startConnection(): Promise<void> {
     return new Promise((resolve, reject) => {
+      // this is the old code
+      //   this.hubConnection = new signalR.HubConnectionBuilder()
+      //     .withUrl(this.hubUrl, {
+      //       accessTokenFactory: () => this.authService.getToken()!})
+      //     .withAutomaticReconnect()
+      //     .build();
 
-    // this is the old code 
-    //   this.hubConnection = new signalR.HubConnectionBuilder()
-    //     .withUrl(this.hubUrl, {
-    //       accessTokenFactory: () => this.authService.getToken()!})
-    //     .withAutomaticReconnect()
-    //     .build();
-
-    //new code with token expiration check
+      //new code with token expiration check
       this.hubConnection = new signalR.HubConnectionBuilder()
         .withUrl(this.hubUrl, {
           accessTokenFactory: () => {
@@ -45,6 +48,17 @@ export class SignalrServiceTs {
       this.hubConnection.on('pendingTrip', (trip) => {
         this.tripInfoService.updateTrip(trip);
         this.tripInfoService.setInTrip(true);
+        if (trip.tripStatus === 'Accepted') {
+          const driverId = trip.driverId;
+          this.accountDataService.getDriverData(driverId).subscribe({
+            next: (res) => {
+              this.tripInfoService.updateDriver(res);
+            },
+            error: (err) => {
+              console.error(err);
+            },
+          });
+        }
       });
       this.hubConnection.on('tripRequested', (trip) => {
         this.tripInfoService.updateTrip(trip);

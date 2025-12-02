@@ -11,7 +11,7 @@
       autocomplete="current-password" required class="​ng-touched ng-dirty ng-valid" />
     <button type="submit" [disabled]="!loginForm.valid" class="m-2">Login</button>
   </form>
-  <button (click)="goToForgotPassword()" class="btn btn-link">Forgot Password?</button>
+  <button (click)="goToForgotPassword()">Forgot Password?</button>
   <button (click)="rerouteToRegister()">go to registration page</button>
   @if (this.role=="Driver") {
   <button (click)="rerouteToFaceLogin()">face login</button>
