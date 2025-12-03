@@ -5,11 +5,11 @@ import { TripsHistoryDto } from '../../models/tripHistoryDto';
 import { MapComponent } from '../map-component/map-component';
 import { CurrencyPipe } from '@angular/common';
 import { DatePipe } from '@angular/common';
-import { SlicePipe } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-trip-history',
-  imports: [HeaderBar,MapComponent,CurrencyPipe,DatePipe,SlicePipe],
+  imports: [HeaderBar,MapComponent,CurrencyPipe,DatePipe],
   templateUrl: './trip-history.html',
   styleUrl: `./trip-history.css`,
 })
@@ -25,13 +25,12 @@ export class TripHistory implements OnInit{
  lastPage:boolean=false;
 
  
-  constructor(private tripHistoryService:TripHistoryService){}
+  constructor(private tripHistoryService:TripHistoryService,private router:Router){}
 ngOnInit(): void {
   this.tripHistoryService.requestTripHistory(this.requestBody).subscribe({next:(res:any)=>{
     this.tripHistoryArr=res.trips;
     if(this.tripHistoryArr.length<10){
     }
-    console.log(this.tripHistoryArr);
   },error:err=>{console.error(err);
 
   }})
@@ -77,6 +76,9 @@ onFilterChange(event:any){
 
   }})
 
+}
+submitComplaint(tripId:string){
+  this.router.navigate(['submit-complaint',tripId])
 }
 
 
