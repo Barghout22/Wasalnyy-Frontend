@@ -16,8 +16,9 @@ import { DriverMap } from './components/driver-map/driver-map';
 import { RiderMap } from './components/rider-map/rider-map';
 import { Wallet } from './components/wallet/wallet';
 import { Chat } from './components/chat/chat';
-
+import { ChatList } from './components/ChatList/ChatList';
 export const routes: Routes = [
+  {path: 'ChatList', component: ChatList, canActivate: [AuthGuard] },
   { path: '', component: DashboardRedirectComponent },
   { path: 'login/:role', component: LoginComponent },
   { path: 'choose-user-type', component: ChooseUserComponent, pathMatch: 'full' },

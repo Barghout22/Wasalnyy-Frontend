@@ -1,0 +1,46 @@
+<div class="sidebar-container">
+  
+  <!-- Header Section -->
+  <div class="sidebar-header">
+    <h2>Messages</h2>
+    <div class="search-box">
+      <i class="search-icon">🔍</i>
+      <input type="text" placeholder="Search chats..." />
+    </div>
+  </div>
+
+  <!-- Chat List Section -->
+  <div class="chat-list">
+    <!-- Loop through chats -->
+    <div 
+      *ngFor="let chat of chats" 
+      class="chat-item" 
+      [class.active]="chat.isActive"
+      (click)="selectChat(chat)"
+    >
+      
+      <!-- Avatar -->
+      <div class="avatar-container">
+        <img [src]="chat.avatar" [alt]="chat.name" class="avatar">
+      </div>
+
+      <!-- Text Info -->
+      <div class="chat-info">
+        <div class="chat-header">
+          <span class="chat-name">{{ chat.name }}</span>
+          <span class="chat-time">{{ chat.time }}</span>
+        </div>
+        
+        <div class="chat-footer">
+          <p class="last-message">{{ chat.lastMessage }}</p>
+          
+          <!-- Unread Badge (Only show if > 0) -->
+          <span *ngIf="chat.unreadCount > 0" class="unread-badge">
+            {{ chat.unreadCount }}
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

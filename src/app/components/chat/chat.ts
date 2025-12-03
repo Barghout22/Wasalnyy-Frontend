@@ -17,7 +17,7 @@ interface Message {
   selector: 'app-chat',
   imports: [CommonModule, FormsModule],
   templateUrl: './chat.html',
-  styles: ``,
+  styleUrl: './chat.css'
 })
 export class Chat implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
