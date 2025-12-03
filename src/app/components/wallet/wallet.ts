@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PaymentService } from '../../services/payment.service';
 import { AuthService } from '../../auth/auth-service';
-import { Router } from '@angular/router';
 import { CurrencyPipe } from '@angular/common';
+import { HeaderBar } from '../header-bar/header-bar';
+
 
 @Component({
   selector: 'app-wallet',
-  imports: [FormsModule,CurrencyPipe],
+  imports: [FormsModule,CurrencyPipe,HeaderBar],
   templateUrl: './wallet.html',
   styleUrl: `./wallet.css`,
 })
@@ -16,8 +17,7 @@ export class Wallet implements OnInit {
    paymentMode:boolean=false;
    role:string=''
    WalletBalance:number=0;
-   constructor(private paymentService: PaymentService,private authService:AuthService
-    ,private router:Router) {}
+   constructor(private paymentService: PaymentService,private authService:AuthService) {}
     ngOnInit(): void {
       this.role=this.authService.getRole()!;
       this.paymentService.getBalance().subscribe({next:(res:any)=>this.WalletBalance=res.balance,error:err=>console.error(err)})
@@ -33,11 +33,4 @@ export class Wallet implements OnInit {
       console.error('Payment failed', error);
     });
   }
-        backToDashboard(){
-          this.router.navigate(['./dashboard'])
-        }
-         logout() {
-          this.authService.logout();
-        }
-
 }

@@ -4,10 +4,12 @@ import { AuthService } from '../../auth/auth-service';
 import { Router } from '@angular/router';
 import { TripInfoService } from '../../services/trip-info.service';
 import { AccountDataService } from '../../services/account-data.service';
+import { HeaderBar } from '../header-bar/header-bar';
+
 
 @Component({
   selector: 'app-rider-dashboard',
-  imports: [FormsModule],
+  imports: [FormsModule,HeaderBar],
   templateUrl: './dashboard.html',
   styleUrl: `./dashboard.css`,
 })
@@ -48,10 +50,6 @@ this.accountData.getUserData().subscribe({next:res=>{
   goToWallet(){
     this.router.navigate(['/wallet']);
     }
-
-  logout() {
-    this.authService.logout();
-  }
   goToTripHistory(){
     this.router.navigate(['/history']);
   }

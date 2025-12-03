@@ -1,10 +1,5 @@
-<div class="header-container">
-        <h3 class="page-header">Wasalnyy</h3>
-        <div>
-            <button (click)="backToDashboard()" class="btn btn-outline-light" style="width: 150px; margin-right: 20px;"> Go back</button>
-            <button (click)="logout()" class="btn btn-outline-light" style="width: 150px; margin-right: 20px;">Sign Out</button>
-        </div>
-</div>
+
+<app-header-bar></app-header-bar>
 <div class="w-50 shadow mt-4 mx-auto d-flex flex-column justify-content-around text-center rounded-2 p-4">
     <p>current balance:</p>
     <p class="fw-bold fs-2">{{WalletBalance|currency:'USD'}}</p>
