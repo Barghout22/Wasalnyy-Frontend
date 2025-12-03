@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, OnDestroy, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ChatSignalRService  } from '../../services/ChatSignalR.service';
 import { Subscription } from 'rxjs';
+import { ChatSignalRService } from '../../services/ChatSignalR.service'; 
 import { AuthService } from '../../auth/auth-service';
-
 
 interface Message {
   id: number;
@@ -15,13 +14,18 @@ interface Message {
 
 @Component({
   selector: 'app-chat',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './chat.html',
-  styleUrl: './chat.css'
+  styleUrls: ['./chat.css']
 })
-export class Chat implements OnInit, AfterViewChecked, OnDestroy {
+export class Chat implements OnInit, AfterViewChecked, OnDestroy, OnChanges {
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
   
+  // INPUTS from Parent
+  @Input() receiverId: string = '';
+  @Input() receiverName: string = 'Chat';
+
   messages: Message[] = [];
   userInput: string = '';
   private messageIdCounter: number = 0;
@@ -31,19 +35,24 @@ export class Chat implements OnInit, AfterViewChecked, OnDestroy {
   private messageSubscription?: Subscription;
   private connectionSubscription?: Subscription;
   isConnected: boolean = false;
-  receiverId: string ='2b02c519-6571-4dd6-8fb5-185e9f3c69c5'; // Replace with actual receiver ID
 
-  constructor(private signalRService: ChatSignalRService,private authService: AuthService ) {}
+  constructor(
+    private signalRService: ChatSignalRService,
+    private authService: AuthService 
+  ) {}
 
   ngOnInit(): void {
-    // Connect to SignalR Hub
     this.connectToSignalR();
-    
-    // Subscribe to incoming messages
     this.subscribeToMessages();
-    
-    // Subscribe to connection status
     this.subscribeToConnectionStatus();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['receiverId'] && !changes['receiverId'].firstChange) {
+      console.log('🔄 UI: Switched chat to receiver ID:', this.receiverId);
+      this.messages = [];
+      this.addBotMessage(`Starting chat with ${this.receiverName}`);
+    }
   }
 
   ngAfterViewChecked(): void {
@@ -54,30 +63,30 @@ export class Chat implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Clean up subscriptions
     this.messageSubscription?.unsubscribe();
     this.connectionSubscription?.unsubscribe();
-    
-    // Stop SignalR connection
     this.signalRService.stopConnection();
   }
 
   private connectToSignalR(): void {
+    console.log('⏳ SignalR: Attempting to connect...');
     
     this.signalRService.startConnection()
       .then(() => {
-        console.log('Connected to SignalR Hub');
+        // --- LOG: Connection Successful ---
+        console.log('✅ SignalR: Connected successfully to the Hub!');
       })
       .catch((err) => {
-        console.error('Failed to connect to SignalR Hub:', err);
-        this.addBotMessage('Failed to connect to chat server. Please refresh the page.');
+        // --- LOG: Connection Failed ---
+        console.error('❌ SignalR: Connection failed/Error:', err);
+        this.addBotMessage('Failed to connect to chat server.');
       });
   }
 
   private subscribeToMessages(): void {
     this.messageSubscription = this.signalRService.messageReceived.subscribe(
       (message: string) => {
-        // Add received message as bot message
+        console.log('📩 SignalR: Received new message from backend:', message);
         this.addBotMessage(message);
       }
     );
@@ -87,44 +96,50 @@ export class Chat implements OnInit, AfterViewChecked, OnDestroy {
     this.connectionSubscription = this.signalRService.connectionEstablished.subscribe(
       (isConnected: boolean) => {
         this.isConnected = isConnected;
+        
+        // --- LOG: Real-time Status Change ---
         if (isConnected) {
-          this.addBotMessage('Connected! You can now send messages.');
+          console.log('📡 SignalR Status: ONLINE');
         } else {
-          this.addBotMessage('Connection lost. Trying to reconnect...');
+          console.warn('📡 SignalR Status: OFFLINE (Disconnected)');
         }
       }
     );
   }
 
   sendMessage(): void {
-  const trimmedInput = this.userInput.trim();
-  
-  if (!trimmedInput) {
-    return;
-  }
+    const trimmedInput = this.userInput.trim();
+    
+    if (!trimmedInput || !this.receiverId) {
+      return;
+    }
 
-  // Use the service method to check actual connection state
-  if (!this.signalRService.isConnected()) {
-    this.addBotMessage('Not connected to server. Please wait...');
-    return;
-  }
+    if (!this.signalRService.isConnected()) {
+      console.warn('⚠️ Cannot send: SignalR is not connected.');
+      this.addBotMessage('Not connected to server. Please wait...');
+      return;
+    }
 
-  // Add user message to UI
-  this.addUserMessage(trimmedInput);
-  
-  // Send message via SignalR
-  this.signalRService.sendMessage(this.receiverId, trimmedInput)
-    .then(() => {
-      console.log('Message sent successfully');
-    })
-    .catch((err) => {
-      console.error('Failed to send message:', err);
-      this.addBotMessage('Failed to send message. Please try again.');
-    });
-  
-  // Clear input
-  this.userInput = '';
-}
+    // 1. Show message in UI immediately
+    this.addUserMessage(trimmedInput);
+    
+    // 2. Send to Backend and Log Result
+    console.log(`📤 SignalR: Sending message to '${this.receiverId}'...`);
+
+    this.signalRService.sendMessage(this.receiverId, trimmedInput)
+      .then((backendResponse: any) => {
+        // --- LOG: Output from Backend ---
+        console.log('✅ SignalR: Message sent successfully!');
+        console.log('🔙 Backend Output/Response:', backendResponse); 
+        // Note: 'backendResponse' will be whatever your C# method returns (e.g., Task<string> or void)
+      })
+      .catch((err) => {
+        console.error('❌ SignalR: Failed to send message:', err);
+        this.addBotMessage('Failed to send message.');
+      });
+    
+    this.userInput = '';
+  }
 
   handleKeyPress(event: KeyboardEvent): void {
     if (event.key === 'Enter' && !event.shiftKey) {

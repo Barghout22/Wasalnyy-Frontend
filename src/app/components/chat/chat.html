@@ -2,10 +2,15 @@
   <!-- Header -->
   <div class="chat-header">
     <div class="header-content">
-      <div class="bot-avatar">🤖</div>
+      <div class="bot-avatar">
+        <!-- You can verify if it's a real user or bot avatar here -->
+        <img [src]="'https://ui-avatars.com/api/?name=' + receiverName + '&background=rgba(255,255,255,0.2)&color=fff'" alt="" class="header-img">
+      </div>
       <div class="header-info">
-        <h2>Chat Assistant</h2>
-        <span class="status">Online</span>
+        <h2>{{ receiverName }}</h2>
+        <span class="status" [class.online]="isConnected">
+          {{ isConnected ? 'Online' : 'Offline' }}
+        </span>
       </div>
     </div>
   </div>
@@ -37,7 +42,7 @@
         (keypress)="handleKeyPress($event)"
         placeholder="Type your message..."
         autocomplete="off"
-        [disabled]="false">
+        [disabled]="!isConnected">
       
       <button 
         class="send-button" 

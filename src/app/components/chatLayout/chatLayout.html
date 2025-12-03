@@ -1,0 +1,32 @@
+<div class="layout-container">
+  
+  <!-- Left Side: Chat List -->
+  <div class="left-pane">
+    <app-ChatList (chatSelected)="onChatSelected($event)"></app-ChatList>
+  </div>
+
+  <!-- Right Side: Chat Window -->
+  <div class="right-pane">
+    
+    <!-- Show Chat if an ID is selected -->
+    <ng-container *ngIf="selectedReceiverId; else noChatSelected">
+      <app-chat 
+        [receiverId]="selectedReceiverId"
+        [receiverName]="selectedReceiverName">
+      </app-chat>
+    </ng-container>
+
+    <!-- Fallback if no chat is selected -->
+    <ng-template #noChatSelected>
+      <div class="empty-state">
+        <div class="empty-content">
+          <span class="icon">💬</span>
+          <h3>Select a conversation</h3>
+          <p>Choose a contact from the left to start chatting.</p>
+        </div>
+      </div>
+    </ng-template>
+
+  </div>
+
+</div>

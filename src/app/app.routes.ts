@@ -17,7 +17,9 @@ import { RiderMap } from './components/rider-map/rider-map';
 import { Wallet } from './components/wallet/wallet';
 import { Chat } from './components/chat/chat';
 import { ChatList } from './components/ChatList/ChatList';
+import { ChatLayout } from './components/chatLayout/chatLayout';
 export const routes: Routes = [
+  {path: 'chat-layout', component: ChatLayout, canActivate: [AuthGuard] },
   {path: 'ChatList', component: ChatList, canActivate: [AuthGuard] },
   { path: '', component: DashboardRedirectComponent },
   { path: 'login/:role', component: LoginComponent },
