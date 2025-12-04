@@ -48,4 +48,14 @@ export class ChatService {
       { headers, params }
     );
   }
+
+  markConversationAsRead(otherUserId: string): Observable<any> {
+    const headers = this.getAuthHeaders();
+
+    return this.http.put(
+      `${this.baseUrl}/conversation/${otherUserId}/read`, 
+      {}, 
+      { headers }
+    );
+  }
 }

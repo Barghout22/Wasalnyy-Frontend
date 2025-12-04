@@ -63,8 +63,7 @@ export class Chat implements OnInit, AfterViewChecked, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // FIX 1: Removed "!changes['receiverId'].firstChange"
-    // We want to load history whenever receiverId has a valid value, even the first time.
+    
     if (changes['receiverId'] && this.receiverId) {
       console.log('🔄 UI: Switched chat to receiver ID:', this.receiverId);
       this.loadConversationHistory(this.receiverId);
@@ -87,18 +86,13 @@ export class Chat implements OnInit, AfterViewChecked, OnDestroy, OnChanges {
           id: apiMsg.id,
           text: apiMsg.content,
 
-          // MAP SENDER:
-          // If isMessageFromMe == true -> 'user' (Green/Right)
-          // If isMessageFromMe == false -> 'bot' (Gray/Left)
+       
           sender: apiMsg.isMessageFromMe ? 'user' : 'bot',
 
           timestamp: new Date(apiMsg.sentAt),
         }));
 
-        // SORTING:
-        // The API usually gives "Latest" messages.
-        // We sort them by timestamp ASCENDING (Oldest -> Newest)
-        // so they appear from top to bottom.
+     
         historyMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
 
         this.messages = historyMessages;
