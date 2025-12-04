@@ -1,4 +1,4 @@
-<div class="header-container">
+<!-- <div class="header-container">
         <h3 class="page-header">Wasalnyy</h3>
         <div>
               @if(!mainDashboard){
@@ -10,4 +10,29 @@
       
         
 
+</div> -->
+
+<div class="header-container">
+    <h3 class="page-header">Wasalnyy</h3>
+    
+    <div class="actions-container">
+        
+        <!-- 👇 New Notification Button -->
+        <button class="icon-btn" (click)="openChat()" title="Messages">
+            <!-- Simple SVG Chat Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            
+            <!-- Red Badge (Only shows if count > 0) -->
+            <span *ngIf="unreadCount > 0" class="badge">
+                {{ unreadCount > 99 ? '99+' : unreadCount }}
+            </span>
+        </button>
+
+        @if(!mainDashboard){
+            <button (click)="backToDashboard()" class="btn btn-outline-light" style="width: 150px; margin-right: 20px;"> Go back</button>
+        }
+        <button (click)="logout()" class="btn btn-outline-light" style="width: 150px; margin-right: 20px;">Sign Out</button>
+    </div>
 </div>

@@ -1,3 +1,62 @@
+import { Component, OnInit, OnDestroy } from '@angular/core'; // Add OnDestroy
+import { CommonModule } from '@angular/common'; // Import CommonModule
+import { AuthService } from '../../auth/auth-service';
+import { Router } from '@angular/router';
+import { ChatSignalRService } from '../../services/ChatSignalR.service';
+import { Subscription } from 'rxjs';
+
+
+
+@Component({
+  selector: 'app-header-bar',
+  standalone: true, // Ensure this is true
+  imports: [CommonModule], // Add CommonModule here
+  templateUrl: './header-bar.html',
+  styleUrl: `./header-bar.css`,
+})
+export class HeaderBar implements OnInit{
+  mainDashboard:boolean=false;
+   unreadCount: number = 0;
+  private msgSub?: Subscription;
+  constructor(private authService:AuthService,private router:Router,    private signalRService: ChatSignalRService // Inject SignalR
+){}
+  ngOnInit(): void {
+     this.checkRoute();
+    this.subscribeToNotifications();
+  }
+   private subscribeToNotifications(): void {
+    this.msgSub = this.signalRService.messageReceived.subscribe(() => {
+      this.unreadCount++;
+    });
+  }
+   openChat(): void {
+    // 1. Reset the counter
+    this.unreadCount = 0;
+    
+    // 2. Navigate to chat page (Adjust route if needed)
+    this.router.navigate(['/chat']);
+  }
+
+    private checkRoute(): void {
+    const route = this.router.url.split('/');
+    if (route[route.length - 1] === 'dashboard') {
+      this.mainDashboard = true;
+    } else {
+      this.mainDashboard = false;
+    }
+  }
+ ngOnDestroy(): void {
+    this.msgSub?.unsubscribe();
+  }
+
+    logout() {
+    this.authService.logout();
+  }
+    backToDashboard(){
+          this.router.navigate(['./dashboard'])
+        }
+}
+/*old code
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../auth/auth-service';
 import { Router } from '@angular/router';
@@ -28,3 +87,4 @@ export class HeaderBar implements OnInit{
           this.router.navigate(['./dashboard'])
         }
 }
+ */
