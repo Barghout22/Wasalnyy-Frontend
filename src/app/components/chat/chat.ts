@@ -57,7 +57,6 @@ export class Chat implements OnInit, AfterViewChecked, OnDestroy, OnChanges {
   ) {}
 
   ngOnInit(): void {
-    this.connectToSignalR();
     this.subscribeToMessages();
     this.subscribeToConnectionStatus();
   }
@@ -114,21 +113,7 @@ export class Chat implements OnInit, AfterViewChecked, OnDestroy, OnChanges {
 
 
 
-  private connectToSignalR(): void {
-    console.log('⏳ SignalR: Attempting to connect...');
-
-    this.signalRService
-      .startConnection()
-      .then(() => {
-        // --- LOG: Connection Successful ---
-        console.log('✅ SignalR: Connected successfully to the Hub!');
-      })
-      .catch((err) => {
-        // --- LOG: Connection Failed ---
-        console.error('❌ SignalR: Connection failed/Error:', err);
-        this.addBotMessage('Failed to connect to chat server.');
-      });
-  }
+ 
 
  
   private subscribeToMessages(): void {
@@ -180,12 +165,12 @@ export class Chat implements OnInit, AfterViewChecked, OnDestroy, OnChanges {
  ngOnDestroy(): void {
     // Unsubscribe from EVERYTHING at once
     this.subscriptions.unsubscribe();
-        this.connectionSubscription?.unsubscribe();
-    this.signalRService.stopConnection();
+   
   }
 
+  //should i remove this ? or move it to chat layout
   private subscribeToConnectionStatus(): void {
-    this.connectionSubscription = this.signalRService.connectionEstablished.subscribe(
+    const sub = this.signalRService.connectionEstablished.subscribe(
       (isConnected: boolean) => {
         this.isConnected = isConnected;
 
@@ -197,6 +182,9 @@ export class Chat implements OnInit, AfterViewChecked, OnDestroy, OnChanges {
         }
       }
     );
+
+
+     this.subscriptions.add(sub);
   }
 
   sendMessage(): void {
