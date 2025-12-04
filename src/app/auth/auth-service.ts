@@ -7,12 +7,16 @@ import { RegisterDriverDto } from '../models/register-driver';
 import { RegisterRiderDto } from '../models/register-rider';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
+import { ChatSignalRService } from '../services/ChatSignalR.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private baseUrl = `${environment.apiUrl}/auth`;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) {}
 
   // 🔹 Login
   login(dto: LoginDto, role?: string): Observable<any> {
@@ -52,24 +56,28 @@ export class AuthService {
     return localStorage.getItem('role');
   }
 
-  logout() {
+  logout(signalRService?: ChatSignalRService) {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
+    
+    if (signalRService) {
+      console.log('🔌 Closing SignalR Connection...');
+      signalRService.stopConnection();
+    }
+    
     this.router.navigate(['choose-user-type']);
   }
-  CheckTokenExpired(token:string){
-    if(!token) return true;
+  CheckTokenExpired(token: string) {
+    if (!token) return true;
 
-    try{
+    try {
+      const jwtDecoded = jwtDecode(token);
 
-      const jwtDecoded=jwtDecode(token);
-  
-      if(!jwtDecoded.exp) return true;
-  
-      const expiry = jwtDecoded.exp * 1000;  
+      if (!jwtDecoded.exp) return true;
+
+      const expiry = jwtDecoded.exp * 1000;
       return Date.now() > expiry;
-    }
-    catch{
+    } catch {
       return true;
     }
   }

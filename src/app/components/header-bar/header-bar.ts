@@ -18,14 +18,14 @@ export class HeaderBar implements OnInit{
   mainDashboard:boolean=false;
    unreadCount: number = 0;
   private msgSub?: Subscription;
-  constructor(private authService:AuthService,private router:Router,    private signalRService: ChatSignalRService // Inject SignalR
+  constructor(private authService:AuthService,private router:Router,    private Chatsignalrservice: ChatSignalRService // Inject SignalR
 ){}
   ngOnInit(): void {
      this.checkRoute();
     this.subscribeToNotifications();
   }
    private subscribeToNotifications(): void {
-    this.msgSub = this.signalRService.messageReceived.subscribe(() => {
+    this.msgSub = this.Chatsignalrservice.messageReceived.subscribe(() => {
       this.unreadCount++;
     });
   }
@@ -34,7 +34,7 @@ export class HeaderBar implements OnInit{
     this.unreadCount = 0;
     
     // 2. Navigate to chat page (Adjust route if needed)
-    this.router.navigate(['/chat']);
+    this.router.navigate(['/chat-layout']);
   }
 
     private checkRoute(): void {
@@ -50,7 +50,9 @@ export class HeaderBar implements OnInit{
   }
 
     logout() {
-    this.authService.logout();
+
+      
+    this.authService.logout(this.Chatsignalrservice);
   }
     backToDashboard(){
           this.router.navigate(['./dashboard'])

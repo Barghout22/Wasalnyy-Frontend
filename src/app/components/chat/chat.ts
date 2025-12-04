@@ -165,7 +165,6 @@ export class Chat implements OnInit, AfterViewChecked, OnDestroy, OnChanges {
  ngOnDestroy(): void {
     // Unsubscribe from EVERYTHING at once
     this.subscriptions.unsubscribe();
-   
   }
 
   //should i remove this ? or move it to chat layout

@@ -29,7 +29,7 @@ export class ChatSignalRService {
           const token = this.authService.getToken();
           if (!token || this.authService.isTokenExpired(token)) {
             console.warn('Token expired or missing. Logging out...');
-            this.authService.logout();
+           // this.authService.logout();
             return ''; // Return empty token, connection will fail
           }
           return token;
