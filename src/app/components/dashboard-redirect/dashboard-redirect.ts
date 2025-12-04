@@ -24,7 +24,7 @@ export class DashboardRedirectComponent implements OnInit {
     const token = this.authService.getToken();
     const role = this.authService.getRole()?.toLowerCase();
    if(!token||!role||this.authService.CheckTokenExpired(token)) this.router.navigate(['/choose-user-type']);
-   else {
+   else if(role!=="admin"){
      this.signalrService.startConnection().then(() => {
       setTimeout(()=>{
        if(this.tripInfoService.isInTripValue) {
@@ -37,6 +37,11 @@ export class DashboardRedirectComponent implements OnInit {
 
      });
 
+   }
+   else{
+          setTimeout(()=>{
+           this.router.navigate([`/admin-dashboard`]);
+      },2000);
    }
   }
 }

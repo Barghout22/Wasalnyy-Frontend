@@ -6,10 +6,11 @@ import { Router } from '@angular/router';
 import { AccountDataService } from '../../services/account-data.service';
 import { AuthService } from '../../auth/auth-service';
 import { EmailUpdateService } from '../../services/email-update';
+import { HeaderBar } from '../header-bar/header-bar';
 @Component({
   selector: 'app-driver-account',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,HeaderBar],
   templateUrl: './driver-account.html',
   styleUrl: './driver-account.css'
 })

@@ -1,31 +1,22 @@
-<div class="account-container">
-  <div class="account-header">
-    <button class="back-btn" (click)="goBack()">← Back</button>
-    <h1>Rider Account</h1>
-    <div></div>
-  </div>
+<app-header-bar></app-header-bar>
 
-  <!-- Loading State -->
+<div class="account-container">
   <div *ngIf="loading" class="loading">
     <div class="spinner"></div>
     <p>Loading your information...</p>
   </div>
 
-  <!-- Error Message -->
   <div *ngIf="error && !loading" class="alert alert-error">
     <span>{{ error }}</span>
     <button (click)="error = ''" class="close-btn">×</button>
   </div>
 
-  <!-- Success Message -->
   <div *ngIf="message" class="alert alert-success">
     <span>{{ message }}</span>
     <button (click)="message = ''" class="close-btn">×</button>
   </div>
 
-  <!-- Main Content -->
   <div *ngIf="!loading" class="account-content">
-    <!-- Profile Image Section -->
     <div class="profile-image-section">
       <div class="image-container">
         <img 
@@ -54,9 +45,7 @@
       </div>
     </div>
 
-    <!-- Form Section -->
     <form class="account-form" (ngSubmit)="saveChanges()" *ngIf="!loading">
-      <!-- Full Name -->
       <div class="form-group">
         <label for="fullName">Full Name</label>
         <input
@@ -71,7 +60,6 @@
         />
       </div>
 
-      <!-- Email with Update Button -->
       <div class="form-group">
         <label for="email">Email</label>
         <div class="email-input-group">
@@ -95,7 +83,6 @@
         </div>
       </div>
 
-      <!-- Phone Number -->
       <div class="form-group">
         <label for="phoneNumber">Phone Number</label>
         <input
@@ -110,7 +97,6 @@
         />
       </div>
 
-      <!-- Action Buttons -->
       <div class="button-group">
         <button
           type="button"
@@ -133,7 +119,6 @@
     </form>
   </div>
 
-  <!-- Email Update Modal -->
   <div *ngIf="isEmailModalOpen" class="modal-overlay">
     <div class="modal-content">
       <div class="modal-header">
@@ -141,12 +126,10 @@
         <button class="close-modal-btn" (click)="closeEmailModal()" [disabled]="isUpdatingEmail || emailMessage">×</button>
       </div>
 
-      <!-- Modal Error -->
       <div *ngIf="emailError" class="alert alert-error">
         <span>{{ emailError }}</span>
       </div>
 
-      <!-- Modal Success -->
       <div *ngIf="emailMessage" class="alert alert-success">
         <span>{{ emailMessage }}</span>
       </div>

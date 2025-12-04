@@ -5,11 +5,12 @@ import { Router } from '@angular/router';
 import { AccountDataService } from '../../services/account-data.service';
 import { AuthService } from '../../auth/auth-service';
 import { EmailUpdateService } from '../../services/email-update';
+import { HeaderBar } from '../header-bar/header-bar';
 
 @Component({
   selector: 'app-rider-account',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,HeaderBar],
   templateUrl: './rider-account.html',
   styleUrl: './rider-account.css'
 })
@@ -56,7 +57,7 @@ export class RiderAccountComponent implements OnInit {
     this.accountDataService.getUserData().subscribe({
       next: (res: any) => {
         this.fullName = res.fullName || '';
-        this.phoneNumber = res.phoneNumber || '';
+        this.phoneNumber = res.phonenumber || '';
         this.email = res.email || '';
         this.imagePreview = res.image || '';
 

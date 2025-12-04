@@ -20,4 +20,7 @@ export class ChooseUserComponent {
   registerDriver() {
     this.router.navigate(['/login',"Driver"]);
   }
+  registerAdmin(){
+    this.router.navigate(['/login','Admin']);
+  }
 }

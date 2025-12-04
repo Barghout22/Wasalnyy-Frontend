@@ -22,22 +22,8 @@
   text-align: center;
 }
 
-.back-btn {
-  background: none;
-  border: none;
-  font-size: 16px;
-  color: #0066cc;
-  cursor: pointer;
-  padding: 8px 12px;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-}
 
-.back-btn:hover {
-  background-color: #f0f0f0;
-}
 
-/* Alert Messages */
 .alert {
   display: flex;
   align-items: center;

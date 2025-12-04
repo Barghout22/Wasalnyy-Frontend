@@ -13,7 +13,7 @@ export class HeaderBar implements OnInit{
   constructor(private authService:AuthService,private router:Router,private signalrService:SignalrServiceTs){}
   ngOnInit(): void {
     const route=this.router.url.split('/');
-    if(route[route.length-1]==="dashboard"){
+    if(route[route.length-1]==="dashboard"||route[route.length-1]==="admin-dashboard"){
       this.mainDashboard=true;
     }
     else{
