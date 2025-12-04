@@ -21,18 +21,18 @@
       
       <!-- Avatar -->
       <div class="avatar-container">
-        <img [src]="chat.avatar" [alt]="chat.name" class="avatar">
+        <img [src]="chat.avatar" [alt]="chat.otherUserName" class="avatar">
       </div>
 
       <!-- Text Info -->
       <div class="chat-info">
         <div class="chat-header">
-          <span class="chat-name">{{ chat.name }}</span>
-          <span class="chat-time">{{ chat.time }}</span>
+          <span class="chat-name">{{ chat.otherUserName }}</span>
+          <span class="chat-time">{{ chat.lastMessageDate }}</span>
         </div>
         
         <div class="chat-footer">
-          <p class="last-message">{{ chat.lastMessage }}</p>
+          <p class="last-message">{{ chat.lastMessgeContet }}</p>
           
           <!-- Unread Badge (Only show if > 0) -->
           <span *ngIf="chat.unreadCount > 0" class="unread-badge">

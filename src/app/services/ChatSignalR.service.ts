@@ -4,6 +4,7 @@ import { Subject, BehaviorSubject } from 'rxjs';
 import { environment } from '../../enviroments/enviroment';
 import { AuthService } from '../auth/auth-service';
 import {MessageFromSignleR} from '../models/MessageFromSignleR';
+import { GetMessageDTO } from '../models/get-message-DTo';
 
 @Injectable({
   providedIn: 'root'
@@ -12,11 +13,10 @@ export class ChatSignalRService {
   private hubConnection!: signalR.HubConnection;
   private hubUrl: string = environment.ChatHubUrl;
   // Observable for receiving messages
-  public messageReceived = new Subject<string>();
-  
+  public messageReceived = new Subject<GetMessageDTO>();  
   // Connection status - use BehaviorSubject to track current state
   public connectionEstablished = new BehaviorSubject<boolean>(false);
-
+  public messageSent = new Subject<GetMessageDTO>();
   constructor(private authService: AuthService) {}
 
   public startConnection(): Promise<void> {
@@ -80,19 +80,18 @@ export class ChatSignalRService {
       });
   }
 
-  private registerOnServerEvents(): void {
-    // Listen for "receivemessage" event from server
-    this.hubConnection.on('receivemessage', (message: MessageFromSignleR) => {
-      console.log('Message received from server:', message);
-      this.messageReceived.next(message.content);
+    private registerOnServerEvents(): void {
+    // 👇 Listen for 'receivemessage' using the DTO
+    this.hubConnection.on('receivemessage', (message: GetMessageDTO) => {
+      console.log('📩 SignalR (Receive):', message);
+      this.messageReceived.next(message);
     });
 
-// Listen for "messagesent" event from server
-    this.hubConnection.on('messagesent', (message: MessageFromSignleR) => {
-      console.log('Message received from server:', message);
-      this.messageReceived.next(message.content);
+  // 2. Outgoing messages (synced from my other devices)
+    this.hubConnection.on('messagesent', (message: GetMessageDTO) => {
+      console.log('📤 SignalR (Sync from other device):', message);
+      this.messageSent.next(message);
     });
-
 
   }
 

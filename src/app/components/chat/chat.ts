@@ -1,9 +1,22 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, OnDestroy, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  AfterViewChecked,
+  OnDestroy,
+  Input,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { ChatSignalRService } from '../../services/ChatSignalR.service'; 
+import { ChatSignalRService } from '../../services/ChatSignalR.service';
 import { AuthService } from '../../auth/auth-service';
+import { ChatService } from '../../services/chat.service';
+import { MessagePaginationDto } from '../../models/message-pagination-DTO';
+import { GetMessageDTO } from '../../models/get-message-DTo';
 
 interface Message {
   id: number;
@@ -17,28 +30,30 @@ interface Message {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './chat.html',
-  styleUrls: ['./chat.css']
+  styleUrls: ['./chat.css'],
 })
 export class Chat implements OnInit, AfterViewChecked, OnDestroy, OnChanges {
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
-  
+
   // INPUTS from Parent
   @Input() receiverId: string = '';
   @Input() receiverName: string = 'Chat';
 
   messages: Message[] = [];
   userInput: string = '';
-  private messageIdCounter: number = 0;
+
+  private messageIdCounter = -1;
   private shouldScroll: boolean = false;
-  
+  private subscriptions: Subscription = new Subscription();
+
   // SignalR properties
-  private messageSubscription?: Subscription;
   private connectionSubscription?: Subscription;
   isConnected: boolean = false;
 
   constructor(
+    private chatService: ChatService,
     private signalRService: ChatSignalRService,
-    private authService: AuthService 
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -48,11 +63,52 @@ export class Chat implements OnInit, AfterViewChecked, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['receiverId'] && !changes['receiverId'].firstChange) {
+    // FIX 1: Removed "!changes['receiverId'].firstChange"
+    // We want to load history whenever receiverId has a valid value, even the first time.
+    if (changes['receiverId'] && this.receiverId) {
       console.log('🔄 UI: Switched chat to receiver ID:', this.receiverId);
-      this.messages = [];
-      this.addBotMessage(`Starting chat with ${this.receiverName}`);
+      this.loadConversationHistory(this.receiverId);
     }
+  }
+
+  // ---------------------------------------------------------
+  // 👇 NEW FUNCTION: Load History from API
+  // ---------------------------------------------------------
+  loadConversationHistory(userId: string): void {
+    this.messages = []; // Clear previous chat
+    console.log(`⏳ Fetching history for user: ${userId}`);
+
+    this.chatService.getConversation(userId).subscribe({
+      next: (response: MessagePaginationDto) => {
+        console.log('📩 History loaded:', response);
+
+        // Map API messages to UI messages
+        const historyMessages: Message[] = response.messages.map((apiMsg) => ({
+          id: apiMsg.id,
+          text: apiMsg.content,
+
+          // MAP SENDER:
+          // If isMessageFromMe == true -> 'user' (Green/Right)
+          // If isMessageFromMe == false -> 'bot' (Gray/Left)
+          sender: apiMsg.isMessageFromMe ? 'user' : 'bot',
+
+          timestamp: new Date(apiMsg.sentAt),
+        }));
+
+        // SORTING:
+        // The API usually gives "Latest" messages.
+        // We sort them by timestamp ASCENDING (Oldest -> Newest)
+        // so they appear from top to bottom.
+        historyMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+
+        this.messages = historyMessages;
+        this.shouldScroll = true;
+      },
+      error: (err) => {
+        console.error('❌ Error loading history:', err);
+        this.addBotMessage('Failed to load conversation history.');
+      },
+    });
   }
 
   ngAfterViewChecked(): void {
@@ -62,16 +118,13 @@ export class Chat implements OnInit, AfterViewChecked, OnDestroy, OnChanges {
     }
   }
 
-  ngOnDestroy(): void {
-    this.messageSubscription?.unsubscribe();
-    this.connectionSubscription?.unsubscribe();
-    this.signalRService.stopConnection();
-  }
+
 
   private connectToSignalR(): void {
     console.log('⏳ SignalR: Attempting to connect...');
-    
-    this.signalRService.startConnection()
+
+    this.signalRService
+      .startConnection()
       .then(() => {
         // --- LOG: Connection Successful ---
         console.log('✅ SignalR: Connected successfully to the Hub!');
@@ -83,20 +136,65 @@ export class Chat implements OnInit, AfterViewChecked, OnDestroy, OnChanges {
       });
   }
 
+ 
   private subscribeToMessages(): void {
-    this.messageSubscription = this.signalRService.messageReceived.subscribe(
-      (message: string) => {
-        console.log('📩 SignalR: Received new message from backend:', message);
-        this.addBotMessage(message);
+    
+    // -----------------------------------------------------------
+    // A. Handle INCOMING Messages (From the other person)
+    // -----------------------------------------------------------
+    const sub1 = this.signalRService.messageReceived.subscribe(
+      (message: GetMessageDTO) => {
+        if (message.senderId === this.receiverId) {
+          
+          // Use PUSH directly to save the REAL ID from the database
+          this.messages.push({
+            id: message.id,         // ✅ Real DB ID (e.g., 505)
+            text: message.content,
+            sender: 'bot',          // ✅ Color: Purple/Left
+            timestamp: new Date(message.sentAt)
+          });
+          
+          this.shouldScroll = true;
+        }
       }
     );
+
+    // -----------------------------------------------------------
+    // B. Handle OUTGOING Sync (From my other device)
+    // -----------------------------------------------------------
+    const sub2 = this.signalRService.messageSent.subscribe((message: GetMessageDTO) => {
+      
+      // Check if it belongs to this chat
+      if (message.receiverId === this.receiverId) {
+        
+        // Use PUSH directly to save the REAL ID from the database
+        this.messages.push({
+          id: message.id,         // ✅ Real DB ID (e.g., 506)
+          text: message.content,
+          sender: 'user',         // ✅ Color: Green/Right
+          timestamp: new Date(message.sentAt)
+        });
+
+        this.shouldScroll = true;
+      }
+    });
+
+    // Add both to the subscription manager
+    this.subscriptions.add(sub1);
+    this.subscriptions.add(sub2);
+  }
+ ngOnDestroy(): void {
+    // Unsubscribe from EVERYTHING at once
+    this.subscriptions.unsubscribe();
+        this.connectionSubscription?.unsubscribe();
+    this.signalRService.stopConnection();
   }
 
   private subscribeToConnectionStatus(): void {
     this.connectionSubscription = this.signalRService.connectionEstablished.subscribe(
       (isConnected: boolean) => {
         this.isConnected = isConnected;
-        
+
         // --- LOG: Real-time Status Change ---
         if (isConnected) {
           console.log('📡 SignalR Status: ONLINE');
@@ -109,7 +207,7 @@ export class Chat implements OnInit, AfterViewChecked, OnDestroy, OnChanges {
 
   sendMessage(): void {
     const trimmedInput = this.userInput.trim();
-    
+
     if (!trimmedInput || !this.receiverId) {
       return;
     }
@@ -122,22 +220,23 @@ export class Chat implements OnInit, AfterViewChecked, OnDestroy, OnChanges {
 
     // 1. Show message in UI immediately
     this.addUserMessage(trimmedInput);
-    
+
     // 2. Send to Backend and Log Result
     console.log(`📤 SignalR: Sending message to '${this.receiverId}'...`);
 
-    this.signalRService.sendMessage(this.receiverId, trimmedInput)
+    this.signalRService
+      .sendMessage(this.receiverId, trimmedInput)
       .then((backendResponse: any) => {
         // --- LOG: Output from Backend ---
         console.log('✅ SignalR: Message sent successfully!');
-        console.log('🔙 Backend Output/Response:', backendResponse); 
+        console.log('🔙 Backend Output/Response:', backendResponse);
         // Note: 'backendResponse' will be whatever your C# method returns (e.g., Task<string> or void)
       })
       .catch((err) => {
         console.error('❌ SignalR: Failed to send message:', err);
         this.addBotMessage('Failed to send message.');
       });
-    
+
     this.userInput = '';
   }
 
@@ -150,27 +249,27 @@ export class Chat implements OnInit, AfterViewChecked, OnDestroy, OnChanges {
 
   private addUserMessage(text: string): void {
     this.messages.push({
-      id: this.messageIdCounter++,
+      id: this.messageIdCounter--,
       text,
       sender: 'user',
-      timestamp: new Date()
+      timestamp: new Date(),
     });
     this.shouldScroll = true;
   }
 
   private addBotMessage(text: string): void {
     this.messages.push({
-      id: this.messageIdCounter++,
+      id: this.messageIdCounter--,
       text,
       sender: 'bot',
-      timestamp: new Date()
+      timestamp: new Date(),
     });
     this.shouldScroll = true;
   }
 
   private scrollToBottom(): void {
     try {
-      this.messagesContainer.nativeElement.scrollTop = 
+      this.messagesContainer.nativeElement.scrollTop =
         this.messagesContainer.nativeElement.scrollHeight;
     } catch (err) {
       console.error('Scroll error:', err);
