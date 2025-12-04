@@ -1,13 +1,15 @@
 // src/app/components/login/login.component.ts
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, NgZone, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../auth/auth-service';
 import { LoginDto } from '../../models/login';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
+import { GoogleLoginDto } from '../../models/GoogleLoginDto';
+import { environment } from '../../../enviroments/enviroment';
 
-
+declare const google: any;
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -15,7 +17,7 @@ import { Router } from '@angular/router';
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
   role: string ="";
   error: string = '';
   loginData: LoginDto = {
@@ -24,11 +26,59 @@ export class LoginComponent implements OnInit {
   };
 
   constructor(private authService: AuthService,private route:
-    ActivatedRoute,private router: Router) {}
+    ActivatedRoute,private router: Router, private ngZone: NgZone) {}
   ngOnInit() {
     this.role = this.route.snapshot.paramMap.get('role')!;
   }
+ngAfterViewInit() {
+    this.initializeGoogleSignIn();
+  }
 
+  initializeGoogleSignIn() {
+    if (typeof google !== 'undefined') {
+      google.accounts.id.initialize({
+        client_id: environment.googleClientId,
+        callback: this.handleGoogleSignIn.bind(this),
+        auto_select: false,
+        cancel_on_tap_outside: true
+      });
+
+      google.accounts.id.renderButton(
+        document.getElementById('google-signin-button'),
+        {
+          theme: 'outline',
+          size: 'large',
+          width: 250,
+          text: 'signin_with'
+        }
+      );
+    }
+  }
+
+  handleGoogleSignIn(response: any) {
+    this.ngZone.run(() => {
+      const googleLoginDto: GoogleLoginDto = {
+        idToken: response.credential
+      };
+
+      this.authService.googleLogin(googleLoginDto).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.error = '';
+            this.authService.saveToken(res.token);
+            this.authService.saveRole('Rider'); // Google login creates Rider by default
+            this.router.navigate(['']);
+          } else {
+            this.error = res.message || 'Google login failed';
+          }
+        },
+        error: (err) => {
+          this.error = err.error?.message || err.error || 'Google login failed';
+          console.error('Google login error:', err);
+        }
+      });
+    });
+  }
   login() {
     this.authService.login(this.loginData,this.role).subscribe({
       next: (res) => {

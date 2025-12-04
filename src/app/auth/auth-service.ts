@@ -7,24 +7,31 @@ import { RegisterDriverDto } from '../models/register-driver';
 import { RegisterRiderDto } from '../models/register-rider';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
+import { GoogleLoginDto } from '../models/GoogleLoginDto';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private baseUrl = `${environment.apiUrl}/auth`;
 
-  constructor(private http: HttpClient,private router:Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) {}
 
   // 🔹 Login
   login(dto: LoginDto, role?: string): Observable<any> {
     let params = new HttpParams();
     if (role) params = params.set('role', role);
-    
+
     return this.http.post(`${this.baseUrl}/login`, dto, { params });
   }
 
+  googleLogin(dto: GoogleLoginDto): Observable<any> {
+    return this.http.post(`${this.baseUrl}/google-login`, dto);
+  }
 
   registerDriver(dto: RegisterDriverDto) {
-     return this.http.post(`${this.baseUrl}/register/driver`, dto);
+    return this.http.post(`${this.baseUrl}/register/driver`, dto);
   }
 
   registerRider(dto: RegisterRiderDto): Observable<any> {
@@ -50,18 +57,16 @@ export class AuthService {
     localStorage.removeItem('role');
     this.router.navigate(['choose-user-type']);
   }
-  CheckTokenExpired(token:string){
-    if(!token) return true;
+  CheckTokenExpired(token: string) {
+    if (!token) return true;
 
-    try{
+    try {
+      const jwtDecoded = jwtDecode(token);
+      if (!jwtDecoded.exp) return true;
 
-      const jwtDecoded=jwtDecode(token);
-      if(!jwtDecoded.exp) return true;
-  
-      const expiry = jwtDecoded.exp * 1000;  
+      const expiry = jwtDecoded.exp * 1000;
       return Date.now() > expiry;
-    }
-    catch{
+    } catch {
       return true;
     }
   }
