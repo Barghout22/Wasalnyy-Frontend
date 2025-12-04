@@ -23,6 +23,27 @@ export class HeaderBar implements OnInit{
   ngOnInit(): void {
      this.checkRoute();
     this.subscribeToNotifications();
+      console.log('🔌 ChatLayout: Checking SignalR Connection.jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj..');
+    this.ensureConnected();
+  }
+  
+private ensureConnected(): void {
+    // Check if already connected
+    if (this.Chatsignalrservice.isConnected()) {
+      console.log('✅ SignalR: Already connected');
+      return;
+    }
+
+    // If not connected, try to connect
+    console.log('⏳ SignalR: Not connected, attempting to connect...');
+    this.Chatsignalrservice
+      .startConnection()
+      .then(() => {
+        console.log('✅ SignalR: Connected successfully in ChatLayout!');
+      })
+      .catch((err) => {
+        console.error('❌ SignalR: Connection failed in ChatLayout:', err);
+      });
   }
    private subscribeToNotifications(): void {
     this.msgSub = this.Chatsignalrservice.messageReceived.subscribe(() => {
