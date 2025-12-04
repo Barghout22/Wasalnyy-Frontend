@@ -25,6 +25,7 @@ import { AdminComplaintsComponent } from './components/admin-complaints/admin-co
 import { DriverAccountComponent } from './components/Driver-profile/driver-account';
 import { RiderAccountComponent } from './components/rider-account/rider-account';
 
+import { SubmitComplaint } from './components/submit-complaint/submit-complaint';
 
 export const routes: Routes = [
   { path: '', component: DashboardRedirectComponent },
@@ -40,8 +41,9 @@ export const routes: Routes = [
   {path:'profile',component: Profile,canActivate:[AuthGuard]},
   { path: 'admin-dashboard', component: AdminDashboard },
 
-  { path: 'reset-password', component: ResetPassword },
-  { path: 'forgot-password', component: ForgotPassword },
+  {path:'submit-complaint/:tripId',component:SubmitComplaint,canActivate:[AuthGuard]},
+  { path: 'reset-password', component: ResetPassword ,canActivate:[AuthGuard]},
+  { path: 'forgot-password', component: ForgotPassword,canActivate:[AuthGuard] },
   
   { path:`driver-map`,component:DriverMap, canActivate: [AuthGuard], data: { role: 'Driver' }},
   { path:`rider-map`,component:RiderMap, canActivate: [AuthGuard], data: { role: 'Rider' }},

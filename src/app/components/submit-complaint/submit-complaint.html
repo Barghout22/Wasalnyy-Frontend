@@ -1,0 +1,20 @@
+<app-header-bar></app-header-bar>
+
+<h1 class="card-title m-3">Report an issue</h1>
+<div class="w-75 mx-auto shadow d-flex flex-column align-items-center p-4 g-3 rounded-2">
+    @if(errorState){
+        <p class="alert alert-danger w-100">{{errorMessage}}</p>
+    }
+    @else if(successState){
+                <p class="alert alert-success w-75 mx-auto">{{sucessMessage}}</p>
+            }
+    <textarea name="" id="" placeholder="Describe the issue" [(ngModel)]="complaintBody.Description" class="form-control w-100" rows="5"></textarea>
+    
+    <label class="form-text w-100">Category</label>
+          <select [(ngModel)]="complaintBody.category" name="type" required class="form-control">
+            @for(category of categories;track category.id){
+                <option [ngValue]="category.id">{{category.name}}</option>
+            }
+    </select>
+    <button class="btn btn-outline-dark w-75 m-3" (click)="submitComplaint()">submit</button>
+</div>
