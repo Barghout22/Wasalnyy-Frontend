@@ -36,7 +36,7 @@ export class SignalrServiceTs {
           accessTokenFactory: () => {
             const token = this.authService.getToken();
             if (!token || this.authService.isTokenExpired(token)) {
-              console.warn('Token expired or missing. Logging out...');
+              //console.warn('Token expired or missing. Logging out...');
               return ''; // return empty token, SignalR will fail
             }
             return token;
