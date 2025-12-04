@@ -4,10 +4,12 @@ import { AuthService } from '../../auth/auth-service';
 import { Router } from '@angular/router';
 import { TripInfoService } from '../../services/trip-info.service';
 import { AccountDataService } from '../../services/account-data.service';
+import { HeaderBar } from '../header-bar/header-bar';
+
 
 @Component({
   selector: 'app-rider-dashboard',
-  imports: [FormsModule],
+  imports: [FormsModule,HeaderBar],
   templateUrl: './dashboard.html',
   styleUrl: `./dashboard.css`,
 })
@@ -32,20 +34,24 @@ else if (this.role==="driver"){
 this.accountData.getUserData().subscribe({next:res=>{
   this.user=res;
   this.userFirstName=this.user.fullName.split(' ')[0];
-  console.log(this.user)
+
 },error:err=>{
   console.error(err);
 }});  
 })
  }
-goToWallet(){
-  this.router.navigate(['/wallet']);
+ goToRideDashboard(){
+   this.router.navigate([`/${this.role}-map`])
   }
-  goToRideDashboard(){
-  this.router.navigate([`/${this.role}-map`])
-   }
+  goToProfile(){
+    this.router.navigate(['/profile'])
+  }
 
-  logout() {
-    this.authService.logout();
+  goToWallet(){
+    this.router.navigate(['/wallet']);
+    }
+  goToTripHistory(){
+    this.router.navigate(['/history']);
   }
+
 }

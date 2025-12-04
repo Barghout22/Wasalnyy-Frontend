@@ -1,0 +1,29 @@
+@font-face {
+  font-family: 'Playwrite';
+  src: url('/fonts/Playwrite.ttf') format('truetype');
+  font-weight: 100 1000;
+  font-style: normal;
+  font-display: swap;
+}
+.header-container{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    box-shadow: 2px 2px 6px grey;
+   background-color:#1ca571 ;
+}
+.page-header{
+ font-family: "Playwrite", sans-serif; 
+ color: white;
+}
+
+button{
+    background-color: #1ca571;
+    color:white ;
+}
+button:hover{
+    background-color: #1b9768;
+    color: white;
+    box-shadow: 2px 2px 6px grey;
+}

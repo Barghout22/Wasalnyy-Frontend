@@ -1,0 +1,4 @@
+.highlight-hover:hover{
+ box-shadow: 0 8px 20px rgba(0,0,0,0.35), 0 0 15px rgba(0, 123, 255, 0.3);
+transform: translate3d(0, -2px, 0);
+  }

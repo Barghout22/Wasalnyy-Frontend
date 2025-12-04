@@ -1,3 +1,22 @@
-<p>charge up your wallet</p>
-<input type="number" name="payment value" id="paymment-value" [(ngModel)]="paymentValue"/>
-<button (click)="makePayment()">make payment for this amount</button>
+
+<app-header-bar></app-header-bar>
+<div class="w-50 shadow mt-4 mx-auto d-flex flex-column justify-content-around text-center rounded-2 p-4">
+    <p>current balance:</p>
+    <p class="fw-bold fs-2">{{WalletBalance|currency:'USD'}}</p>
+   @if (role==="Rider"){
+    @if(!paymentMode){
+
+        <button class="btn" (click)="togglePaymentMode()">top up wallet</button>
+    }
+    
+    @else{
+      <div class="w-50 mx-auto d-flex flex-column gap-2">
+        <label for="paymment-value" class="form-text">amount to add to wallet:</label>
+          <input type="number" name="payment-value" id="paymment-value" [(ngModel)]="paymentValue" class="form-control" placeholder="amount to add"/>
+          <button (click)="makePayment()" class="btn"> payment via Stripe</button>
+      </div>
+   }
+    }
+</div>
+
+

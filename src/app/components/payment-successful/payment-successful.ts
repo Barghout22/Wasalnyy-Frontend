@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
-
+import { PaymentService } from '../../services/payment.service';
 @Component({
   selector: 'app-payment-successful',
   imports: [],
@@ -11,23 +11,30 @@ import { Router } from '@angular/router';
 export class PaymentSuccessful {
   paymentId:string|null='';
   paymentAmount:string|null='';
+  countdown:number=5;
   
-constructor(private route: ActivatedRoute,private router:Router) {}
+constructor(private route: ActivatedRoute,private router:Router,private paymentService:PaymentService) {}
 
 ngOnInit() {
   this.route.queryParams.subscribe(params => {
     const sessionId = params['session_id'];
-    const rideId = params['rideId'];
     const amount = params['amount'];
 
     this.paymentId=sessionId;
     this.paymentAmount=amount;
-    console.log("Session:", sessionId);
-    console.log("Ride:", rideId);
-    console.log("Amount:", amount);
-    setTimeout(() => {
-      this.router.navigate(['/rider-dashboard']);
-    }, 5000);
+    this.paymentService.updateWallet({TransactionId:sessionId,Status:1,Amount:amount}).subscribe({
+      next:res=>{console.log("success")}
+    ,error:err=>{console.error(err)}})
+    
+    const myinterval=setInterval(()=>{
+      if(this.countdown===0){
+        clearInterval(myinterval);
+        this.router.navigate(['/rider-dashboard']);
+      }else {
+        this.countdown--;
+      }
+    },1000)
+
   });
 }
 

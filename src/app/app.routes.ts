@@ -15,12 +15,13 @@ import { ForgotPassword } from './components/forgot-password/forgot-password';
 import { DriverMap } from './components/driver-map/driver-map';
 import { RiderMap } from './components/rider-map/rider-map';
 import { Wallet } from './components/wallet/wallet';
-import { Chat } from './components/chat/chat';
-import { ChatList } from './components/ChatList/ChatList';
+
 import { ChatLayout } from './components/chatLayout/chatLayout';
+import { TripHistory } from './components/trip-history/trip-history';
+import { Profile } from './components/profile/profile';
+
 export const routes: Routes = [
   {path: 'chat-layout', component: ChatLayout, canActivate: [AuthGuard] },
-  {path: 'ChatList', component: ChatList, canActivate: [AuthGuard] },
   { path: '', component: DashboardRedirectComponent },
   { path: 'login/:role', component: LoginComponent },
   { path: 'choose-user-type', component: ChooseUserComponent, pathMatch: 'full' },
@@ -30,6 +31,8 @@ export const routes: Routes = [
   { path: 'face-scan/login', component: FaceScan },
 
   { path: 'dashboard', component: Dashboard, canActivate: [AuthGuard] },
+  {path:'history',component:TripHistory,canActivate:[AuthGuard]},
+  {path:'profile',component: Profile,canActivate:[AuthGuard]},
   { path: 'admin-dashboard', component: AdminDashboard, canActivate: [AuthGuard], data: { role: 'Admin' } },
 
   { path: 'reset-password', component: ResetPassword },
@@ -39,7 +42,6 @@ export const routes: Routes = [
   { path: `rider-map`, component: RiderMap, canActivate: [AuthGuard], data: { role: 'Rider' } },
 
   { path: 'wallet', component: Wallet, canActivate: [AuthGuard] },
-  { path: 'chat', component: Chat, canActivate: [AuthGuard] },
   { path: 'payment-failed', component: PaymentFailed },
   { path: 'payment-successful', component: PaymentSuccessful },
 
