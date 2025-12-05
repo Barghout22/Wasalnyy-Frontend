@@ -27,38 +27,28 @@ export class AdminDriversComponent implements OnInit {
   }
 
   // Get driver by ID
-  getDriverById() {
+getDriverById() {
     if (!this.searchDriverId.trim()) {
       this.message = 'Please enter a driver ID';
       this.messageType = 'error';
       return;
     }
     this.isLoading = true;
-    this.adminService.getDriverTrips(this.searchDriverId).subscribe({
-      next: (data) => {
-        if (data && data.length > 0) {
-          console.log(data);
-          // Get the driver info from the first trip
-          const driverData = data[0]?.driver;
-          if (driverData) {
-            this.drivers = [driverData];
-            this.isLoading = false;
-            this.message = `Driver found: ${driverData.fullName}`;
-            this.messageType = 'success';
-          } else {
-            this.drivers = [];
-            this.isLoading = false;
-            this.message = 'Driver not found';
-            this.messageType = 'error';
-          }
+    this.adminService.getDriverById(this.searchDriverId).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.drivers = [data];
+          this.isLoading = false;
+          this.message = `Driver found: ${data.fullName}`;
+          this.messageType = 'success';
         } else {
           this.drivers = [];
           this.isLoading = false;
-          this.message = 'Driver not found or has no trips';
+          this.message = 'Driver not found';
           this.messageType = 'error';
         }
       },
-      error: (err) => {
+      error: (err: any) => {
         this.isLoading = false;
         this.drivers = [];
         this.message = 'Error finding driver by ID';
@@ -67,6 +57,8 @@ export class AdminDriversComponent implements OnInit {
       }
     });
   }
+
+
 
   goBack() {
     window.location.href = '/admin';

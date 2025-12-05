@@ -15,6 +15,10 @@ export class AdminService {
     return this.http.get(`${this.apiUrl}/drivers`);
   }
 
+  getDriverById(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/drivers/${id}`);
+  }
+
   getDriverByLicense(license: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/drivers/license/${license}`);
   }
@@ -23,9 +27,7 @@ export class AdminService {
     return this.http.get(`${this.apiUrl}/drivers/${driverId}/trips/count`);
   }
 
-  getDriverTrips(driverId: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/drivers/${driverId}/trips`);
-  }
+ 
 
   getDriverSubmittedComplaints(license: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/drivers/license/${license}/complaints/submitted`);
@@ -48,6 +50,10 @@ export class AdminService {
     return this.http.get(`${this.apiUrl}/riders`);
   }
 
+  getRiderById(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/riders/${id}`);
+  }
+
   getRiderByPhone(phone: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/riders/phone/${phone}`);
   }
@@ -56,31 +62,37 @@ export class AdminService {
     return this.http.get(`${this.apiUrl}/riders/${riderId}/trips/count`);
   }
 
-  getRiderTrips(riderId: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/riders/${riderId}/trips`);
-  }
-
-  getRiderTripsByPhone(phone: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/riders/phone/${phone}/trips`);
-  }
-
   getRiderComplaintsByPhone(phone: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/riders/phone/${phone}/complaints`);
   }
+
+  getRiderAgainstComplaintsByPhone(phone: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/riders/phone/${phone}/complaints/against`);
+  }
+
+ 
 
   suspendRider(id: string): Observable<any> {
     return this.http.put(`${this.apiUrl}/riders/${id}/suspend`, {});
   }
 
- 
+  // ============= TRIPS =============
+  
   getTripById(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/trips/${id}`);
   }
 
-  getTripsByStatus(status: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/trips/status/${status}`);
+  getDriverTrips(driverId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/trips/drivertrips/${driverId}`);
   }
 
+  getRiderTrips(riderId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/trips/ridertrips/${riderId}`);
+  }
+
+  getRiderTripsByPhone(phone: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/trips/ridertripsbyphone/${phone}`);
+  }
 
   getTotalCounts(): Observable<any> {
     return this.http.get(`${this.apiUrl}/reports/totals`);

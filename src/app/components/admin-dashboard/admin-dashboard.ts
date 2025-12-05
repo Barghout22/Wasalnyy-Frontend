@@ -36,4 +36,8 @@ export class AdminDashboard implements OnInit {
     // Navigate to reports page
     window.location.href = '/admin/reports';
   }
+  goTocomplaints() {
+    // Navigate to complaints page
+    window.location.href = '/admin/complaints';
+  }
 }
