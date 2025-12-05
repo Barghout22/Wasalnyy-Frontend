@@ -1,0 +1,50 @@
+.layout-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: #f0f2f5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.left-pane {
+  width: 350px;
+  flex-shrink: 0;
+  height: 100%;
+  background: white;
+  border-right: 1px solid #e0e0e0;
+}
+
+.right-pane {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #f8fafc;
+}
+
+.empty-state {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+}
+
+.empty-content {
+  text-align: center;
+}
+
+.empty-content .icon {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-content h3 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+  color: #334155;
+}

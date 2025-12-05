@@ -24,12 +24,13 @@ import { AdminReportsComponent } from './components/admin-reports/admin-reports'
 import { AdminComplaintsComponent } from './components/admin-complaints/admin-complaints';
 import { DriverAccountComponent } from './components/Driver-profile/driver-account';
 import { RiderAccountComponent } from './components/rider-account/rider-account';
-
+import { ChatLayout } from './components/chatLayout/chatLayout';
 import { SubmitComplaint } from './components/submit-complaint/submit-complaint';
 import { ComplaintHistory } from './components/complaint-history/complaint-history';
 import { Unauthorized } from './components/unauthorized/unauthorized';
 
 export const routes: Routes = [
+  {path: 'chat-layout', component: ChatLayout, canActivate: [AuthGuard] },
   { path: '', component: DashboardRedirectComponent },
   { path: 'login/:role', component: LoginComponent },
   { path: 'choose-user-type', component: ChooseUserComponent, pathMatch: 'full' },
