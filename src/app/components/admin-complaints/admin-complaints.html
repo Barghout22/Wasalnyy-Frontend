@@ -1,8 +1,7 @@
 <app-header-bar></app-header-bar>
 <div class="container">
   <div class="header">
-    <h1>📋 Complaints Management</h1>
-    <button class="back-btn" (click)="goBack()">← Back to Dashboard</button>
+    <h1> Complaints Management</h1>
   </div>
 
   <!-- Message -->
@@ -17,21 +16,21 @@
       [class.active]="searchType === 'driver'"
       (click)="changeSearchType('driver')"
     >
-      👨‍💼 Driver Complaints
+     Driver Complaints
     </button>
     <button 
       class="tab-btn" 
       [class.active]="searchType === 'rider'"
       (click)="changeSearchType('rider')"
     >
-      👤 Rider Complaints
+       Rider Complaints
     </button>
     <button 
       class="tab-btn" 
       [class.active]="searchType === 'complaint'"
       (click)="changeSearchType('complaint')"
     >
-      🔍 Search by ID
+       Search by ID
     </button>
   </div>
 
@@ -49,13 +48,13 @@
 
     <div class="button-group">
       <button class="action-btn btn-submitted" (click)="getDriverSubmittedComplaints()" [disabled]="!driverLicense">
-        📤 Submitted by Driver
+        Submitted by Driver
       </button>
       <button class="action-btn btn-against" (click)="getDriverComplaintsAgainst()" [disabled]="!driverLicense">
-        📥 Against Driver
+         Against Driver
       </button>
       <button class="action-btn btn-clear" (click)="clearSearch()">
-        🗑️ Clear
+         Clear
       </button>
     </div>
   </div>
@@ -74,11 +73,11 @@
 
     <div class="button-group">
       <button class="action-btn btn-rider-complaints" (click)="getRiderComplaints()" [disabled]="!riderPhone">
-        📋 Get Rider Complaints
+         Get Rider Complaints
       </button>
       
       <button class="action-btn btn-clear" (click)="clearSearch()">
-        🗑️ Clear
+         Clear
       </button>
     </div>
   </div>
@@ -97,10 +96,10 @@
 
     <div class="button-group">
       <button class="action-btn btn-search" (click)="getComplaintById()" [disabled]="!complaintId">
-        🔍 Search
+         Search
       </button>
       <button class="action-btn btn-clear" (click)="clearSearch()">
-        🗑️ Clear
+         Clear
       </button>
     </div>
   </div>

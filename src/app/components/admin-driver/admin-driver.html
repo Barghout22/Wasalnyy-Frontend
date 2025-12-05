@@ -12,14 +12,13 @@
   <!-- Search Section -->
   <div class="search-section">
     <div class="search-group">
-      <label>Search by License Number</label>
+      <label>Search by License</label>
       <input 
         type="text" 
         [(ngModel)]="searchLicense" 
         placeholder="Enter driver license number"
       >
-      <button (click)="getDriverByLicense()">Get by License</button>
-      <button (click)="getDriverByLicense()" [disabled]="!searchLicense.trim()">Search by License</button>
+      <button (click)="getDriverByLicense()" [disabled]="!searchLicense.trim()">Get by License</button>
     </div>
 
     <div class="search-group">
@@ -48,25 +47,11 @@
        Get All Drivers
     </button>
 
-    <button class="action-btn btn-by-license" (click)="getDriverByLicense()" [disabled]="!searchLicense">
-       Get by License
-    </button>
-
-    <button class="action-btn btn-by-license" (click)="getDriverByLicense()" [disabled]="!searchLicense.trim()">
-      🔍 Get by License
-    </button>
-
-    <button class="action-btn btn-by-id" (click)="getDriverById()" [disabled]="!searchDriverId.trim()">
-      🔍 Search by ID
-    </button>
-
     <button class="action-btn btn-trip-count" (click)="getDriverTripCount()" [disabled]="!driverId">
        Trip Count
     </button>
 
-    <button class="action-btn btn-trip-count" (click)="getDriverTripCount()" [disabled]="!driverId.trim()">
-      📊 Trip Count
-    </button>
+
 
     <button class="action-btn btn-trips" (click)="getDriverTrips()" [disabled]="!driverId">
        Get Trips
@@ -84,16 +69,9 @@
        Get Rating
     </button>
 
-    <button class="action-btn btn-rating" (click)="getDriverRating()" [disabled]="!searchLicense.trim()">
-      ⭐ Get Rating
-    </button>
 
     <button class="action-btn btn-suspend" (click)="suspendDriver()" [disabled]="!searchLicense">
        Suspend Driver
-    </button>
-
-    <button class="action-btn btn-suspend" (click)="suspendDriver()" [disabled]="!searchLicense.trim()">
-      🚫 Suspend Driver
     </button>
   </div>
 
@@ -103,7 +81,7 @@
 
     <div *ngIf="isLoading" class="loading">Loading...</div>
     
-    <table *ngIf="!isLoading && drivers.length > 0">
+    <!-- <table *ngIf="!isLoading && drivers.length > 0">
       <thead>
         <tr>
           <th>ID</th>
@@ -122,7 +100,7 @@
           <td>{{ driver.email }}</td>
         </tr>
       </tbody>
-    </table>
+    </table> -->
 
     <div *ngIf="!isLoading && drivers.length > 0" class="results-container">
 

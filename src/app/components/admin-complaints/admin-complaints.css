@@ -1,7 +1,5 @@
 .container {
   padding: 30px;
-  background: #f5f5f5;
-  min-height: 100vh;
 }
 
 .header {
@@ -14,21 +12,6 @@
 .header h1 {
   color: #333;
   font-size: 2em;
-}
-
-.back-btn {
-  padding: 10px 20px;
-  background: #667eea;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1em;
-  transition: background 0.3s;
-}
-
-.back-btn:hover {
-  background: #5568d3;
 }
 
 .error {
@@ -73,7 +56,7 @@
 }
 
 .tab-btn.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #667eea;
   color: white;
 }
 
@@ -125,6 +108,7 @@
 }
 
 .action-btn {
+  background-color: #667eea;
   padding: 12px 20px;
   border: none;
   border-radius: 5px;
@@ -142,26 +126,6 @@
 .action-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-.btn-submitted {
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-}
-
-.btn-against {
-  background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
-}
-
-.btn-rider-complaints {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-}
-
-.btn-search {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.btn-clear {
-  background: linear-gradient(135deg, #999 0%, #666 100%);
 }
 
 /* Loading */

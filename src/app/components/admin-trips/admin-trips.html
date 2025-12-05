@@ -19,7 +19,7 @@
         [(ngModel)]="tripId" 
         placeholder="Enter trip ID (UUID)"
       >
-      <button (click)="getTripById()" [disabled]="!tripId.trim()">🔍 Search by ID</button>
+      <button (click)="getTripById()" [disabled]="!tripId.trim()"> Search by ID</button>
     </div>
 
     <!-- Search by Driver ID -->
@@ -30,7 +30,7 @@
         [(ngModel)]="driverId" 
         placeholder="Enter driver ID"
       >
-      <button (click)="getDriverTrips()" [disabled]="!driverId.trim()">👨‍💼 Driver Trips</button>
+      <button (click)="getDriverTrips()" [disabled]="!driverId.trim()"> Driver Trips</button>
     </div>
 
     <!-- Search by Rider ID -->
@@ -41,7 +41,7 @@
         [(ngModel)]="riderId" 
         placeholder="Enter rider ID"
       >
-      <button (click)="getRiderTrips()" [disabled]="!riderId.trim()">👤 Rider Trips</button>
+      <button (click)="getRiderTrips()" [disabled]="!riderId.trim()"> Rider Trips</button>
     </div>
 
     <!-- Search by Phone Number -->
@@ -52,7 +52,7 @@
         [(ngModel)]="phone" 
         placeholder="Enter phone number"
       >
-      <button (click)="getRiderTripsByPhone()" [disabled]="!phone.trim()">📱 Trips by Phone</button>
+      <button (click)="getRiderTripsByPhone()" [disabled]="!phone.trim()"> Trips by Phone</button>
     </div>
   </div>
 
@@ -82,7 +82,6 @@
         <div class="trip-info">
           <div class="info-column">
             <h5>📋 Trip Details</h5>
-            <p><strong>Zone ID:</strong> {{ trip.zoneId || 'N/A' }}</p>
             <p><strong>Payment Method:</strong> {{ trip.paymentMethod || 'N/A' }}</p>
             <p><strong>Distance:</strong> {{ trip.distanceKm }} km</p>
             <p><strong>Duration:</strong> {{ trip.durationMinutes }} minutes</p>
@@ -98,10 +97,7 @@
           <div class="info-column">
             <h5>📍 Locations</h5>
             <p><strong>Pickup:</strong> {{ trip.pickUpName || 'N/A' }}</p>
-            <p><strong>Pickup Coordinates:</strong> {{ trip.pickupCoordinates?.Lat }}, {{ trip.pickupCoordinates?.Lng }}</p>
-            <p><strong>Destination:</strong> {{ trip.destinationName || 'N/A' }}</p>
-            <p><strong>Destination Coordinates:</strong> {{ trip.destinationCoordinates?.Lat }}, {{ trip.destinationCoordinates?.Lng }}</p>
-            <p><strong>Current Coordinates:</strong> {{ trip.currentCoordinates?.Lat }}, {{ trip.currentCoordinates?.Lng }}</p>
+             <p><strong>Destination:</strong> {{ trip.destinationName || 'N/A' }}</p>
           </div>
 
           <div class="info-column">
@@ -111,6 +107,7 @@
             <p><strong>Arrived:</strong> {{ trip.arrivalDate | date:'medium' }}</p>
           </div>
         </div>
+        <hr>
       </div>
     </div>
   </div>

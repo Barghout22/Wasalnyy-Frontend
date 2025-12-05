@@ -41,19 +41,6 @@
     </div>
   </div>
 
-  <!-- Search Section -->
-  <div class="search-section" *ngIf="dashboardLoaded">
-    <h3>Search Complaints</h3>
-    <div class="search-group">
-      <input 
-        type="text" 
-        [(ngModel)]="complaintId" 
-        placeholder="Enter complaint ID (UUID)"
-      >
-      <button (click)="getComplaintById()">Search Complaint</button>
-    </div>
-  </div>
-
   <!-- Action Buttons -->
   <div class="buttons-section" *ngIf="dashboardLoaded">
     <button class="action-btn btn-refresh" (click)="refreshDashboard()">
@@ -62,9 +49,7 @@
     <button class="action-btn btn-export" (click)="exportData()">
        Export Report
     </button>
-    <button class="action-btn btn-search" (click)="getComplaintById()" [disabled]="!complaintId">
-       Search Complaint
-    </button>
+
   </div>
 
   <!-- Complaints Results -->
