@@ -131,7 +131,7 @@
 }
 
 .bot-bubble {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #d0ea66 0%, #a2964b 100%);
   color: white;
   border-bottom-left-radius: 4px;
   border: none;
@@ -179,7 +179,7 @@
 }
 
 .message-input:focus {
-  border-color: #667eea;
+  border-color: #d0ea66;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -188,7 +188,7 @@
   height: 48px;
   border-radius: 50%;
   border: none;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6dea66 0%, #4fa24b 100%);
   color: white;
   cursor: pointer;
   display: flex;

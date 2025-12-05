@@ -1,7 +1,11 @@
 <div class="sidebar-container">
   
+  <div class="current-user-header" *ngIf="currentUserName">
+    <img [src]="currentUserAvatar" class="my-avatar" alt="Me">
+    <span class="my-name">{{ currentUserName }}</span>
+  </div>
+
   <div class="sidebar-header">
-    <h2>Messages</h2>
     <div class="search-box">
       <i class="search-icon">🔍</i>
       <input type="text" placeholder="Search chats..." />

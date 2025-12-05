@@ -29,6 +29,11 @@ export class ChatService {
     const headers = this.getAuthHeaders();
     return this.http.get<ChatSidebarListResponse>(`${this.baseUrl}/sidebar`, { headers });
   }
+getUserName(userId: string): Observable<{ userName: string }> { 
+    const headers = this.getAuthHeaders();
+    return this.http.get<{ userName: string }>(`${this.baseUrl}/User/${userId}/name`, { headers });
+}
+
 
   getConversation(
     otherUserId: string,

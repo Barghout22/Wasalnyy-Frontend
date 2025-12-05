@@ -192,11 +192,11 @@ export class Chat implements OnInit, AfterViewChecked, OnDestroy, OnChanges {
     this.signalRService
       .sendMessage(this.receiverId, trimmedInput)
       .then((backendResponse: any) => {
-        console.log(' SignalR: Message sent successfully!');
+        console.log('✅ SignalR: Message sent successfully!');
         console.log(' Backend Output/Response:', backendResponse);
       })
       .catch((err) => {
-        console.error(' SignalR: Failed to send message:', err);
+        console.error('❌ SignalR: Failed to send message:', err);
         this.addBotMessage('Failed to send message.');
       });
 
