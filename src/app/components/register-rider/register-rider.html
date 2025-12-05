@@ -1,26 +1,167 @@
 <div class="register-container">
   <h2>Rider Registration</h2>
 
-  <form (ngSubmit)="registerRider()" #registerForm="ngForm">
-    @if(successState){
-      <p class="alert alert-success">{{successMessage}}</p>
-    }
-    @if(errorState){
-        <p class="alert alert-danger">{{errorMessage}}</p>
-    }
-    <input [(ngModel)]="rider.fullName" name="fullName" placeholder="Full Name" required />
-    <input [(ngModel)]="rider.email" name="email" type="email" placeholder="Email" required />
-    <input [(ngModel)]="rider.phoneNumber" name="phoneNumber" placeholder="Phone Number" required />
-    <input [(ngModel)]="rider.password" name="password" type="password" placeholder="Password" required />
-    <label for="DateOfBirth">Date of birth</label>
-    <input [(ngModel)]="rider.DateOfBirth" type="date" name="DateOfBirth" placeholder="Date of birth" required />
-      <label>Gender</label>
-      <select [(ngModel)]="rider.Gender" name="type" required>
-        <option *ngFor="let gender of genders" [ngValue]="gender.id">{{ gender.name }}</option>
-      </select>
-    <label>Provider (optional)</label>
-    <input [(ngModel)]="rider.provider" name="provider" placeholder="Provider (optional)" />
+  <!-- Success / Error Messages -->
+  <div *ngIf="successState" class="alert alert-success">{{ successMessage }}</div>
+  <div *ngIf="errorState" class="alert alert-danger">{{ errorMessage }}</div>
 
-    <button type="submit" [disabled]="!registerForm.valid">Register Rider</button>
+  <!-- Form -->
+  <form [formGroup]="registerForm" (ngSubmit)="registerRider()">
+    <!-- Full Name -->
+    <div class="mb-3">
+      <label class="form-label">Full Name</label>
+      <input type="text" class="form-control" formControlName="FullName" placeholder="Full Name" />
+      <div
+        *ngIf="registerForm.get('FullName')?.touched && registerForm.get('FullName')?.invalid"
+        class="text-danger mt-1"
+      >
+        <small *ngIf="registerForm.get('FullName')?.errors?.['required']"
+          >Full Name is required.</small
+        >
+        <small *ngIf="registerForm.get('FullName')?.errors?.['minlength']"
+          >Minimum 3 characters.</small
+        >
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div class="mb-3">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-control" formControlName="Email" placeholder="Email" />
+      <div
+        *ngIf="registerForm.get('Email')?.touched && registerForm.get('Email')?.invalid"
+        class="text-danger mt-1"
+      >
+        <small *ngIf="registerForm.get('Email')?.errors?.['required']">Email is required.</small>
+        <small *ngIf="registerForm.get('Email')?.errors?.['email']">Invalid email format.</small>
+      </div>
+    </div>
+
+    <!-- Phone -->
+    <div class="mb-3">
+      <label class="form-label">Phone Number</label>
+      <input
+        type="text"
+        class="form-control"
+        formControlName="PhoneNumber"
+        placeholder="Phone Number"
+      />
+      <div
+        *ngIf="registerForm.get('PhoneNumber')?.touched && registerForm.get('PhoneNumber')?.invalid"
+        class="text-danger mt-1"
+      >
+        <small *ngIf="registerForm.get('PhoneNumber')?.errors?.['required']"
+          >Phone number is required.</small
+        >
+        <small *ngIf="registerForm.get('PhoneNumber')?.errors?.['pattern']"
+          >Phone must be 11 digits.</small
+        >
+      </div>
+    </div>
+
+    <!-- Password -->
+    <div class="mb-3 position-relative">
+      <label class="form-label">Password</label>
+      <input
+        [type]="showPassword ? 'text' : 'password'"
+        class="form-control"
+        formControlName="Password"
+        placeholder="Password"
+      />
+      <i
+        class="bi"
+        [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"
+        (click)="showPassword = !showPassword"
+        style="position: absolute; top: 38px; right: 12px; cursor: pointer"
+      ></i>
+      <div
+        *ngIf="registerForm.get('Password')?.touched && registerForm.get('Password')?.invalid"
+        class="text-danger mt-1"
+      >
+        <small class="error-text" *ngIf="registerForm.get('Password')?.touched">
+            <span *ngIf="registerForm.get('Password')?.errors?.['minLength']">
+              Password must be at least 6 characters.
+            </span>
+            <span *ngIf="registerForm.get('Password')?.errors?.['uppercase']">
+              Password must contain at least 1 uppercase letter.
+            </span>
+            <span *ngIf="registerForm.get('Password')?.errors?.['lowercase']">
+              Password must contain at least 1 lowercase letter.
+            </span>
+            <span *ngIf="registerForm.get('Password')?.errors?.['number']">
+              Password must contain at least 1 number.
+            </span>
+            <span *ngIf="registerForm.get('Password')?.errors?.['special']">
+              Password must contain at least 1 special character.
+            </span>
+            <span *ngIf="registerForm.get('Password')?.errors?.['noSpaces']">
+              Password cannot contain spaces.
+            </span>
+          </small>
+      </div>
+    </div>
+    <!-- Confirm Password -->
+    <div class="mb-3 position-relative">
+      <label class="form-label">Confirm Password</label>
+      <input
+        [type]="showConfirmPassword ? 'text' : 'password'"
+        class="form-control"
+        formControlName="ConfirmPassword"
+        placeholder="Confirm Password"
+      />
+      <i
+        class="bi"
+        [ngClass]="showConfirmPassword ? 'bi-eye-slash' : 'bi-eye'"
+        (click)="showConfirmPassword = !showConfirmPassword"
+        style="position: absolute; top: 38px; right: 12px; cursor: pointer"
+      ></i>
+      <div
+        *ngIf="registerForm.get('ConfirmPassword')?.touched && registerForm.get('ConfirmPassword')?.invalid"
+        class="text-danger mt-1"
+      >
+        <small class="error-text" *ngIf="registerForm.get('ConfirmPassword')?.touched">
+          <span *ngIf="registerForm.get('ConfirmPassword')?.errors?.['mismatch']">
+            Passwords did not match.
+          </span>
+        </small>
+      </div>
+    </div>
+
+    <!-- Date of Birth -->
+    <div class="mb-3">
+      <label class="form-label">Date of Birth</label>
+      <input type="date" class="form-control" formControlName="DateOfBirth" />
+      <div
+        *ngIf="registerForm.get('DateOfBirth')?.touched && registerForm.get('DateOfBirth')?.invalid"
+        class="text-danger mt-1"
+      >
+        <small>Date of Birth is required.</small>
+      </div>
+    </div>
+
+    <!-- Gender -->
+    <div class="mb-3">
+      <label class="form-label">Gender</label>
+      <select class="form-select" formControlName="Gender">
+        <option value="">Select Gender</option>
+        <option *ngFor="let g of genders" [value]="g.id">{{ g.name }}</option>
+      </select>
+      <div
+        *ngIf="registerForm.get('Gender')?.touched && registerForm.get('Gender')?.invalid"
+        class="text-danger mt-1"
+      >
+        <small>Gender is required.</small>
+      </div>
+    </div>
+
+    <!-- Submit Button with Loader -->
+    <button
+      type="submit"
+      class="btn btn-primary w-100"
+      [disabled]="loading || registerForm.invalid"
+    >
+      <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+      Register Rider
+    </button>
   </form>
 </div>

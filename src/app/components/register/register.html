@@ -1,60 +1,281 @@
-<!-- src/app/components/register-driver/register-driver.component.html -->
 <div class="register-container">
   <h2>Driver Registration</h2>
 
-  <form (ngSubmit)="registerDriver()" #registerForm="ngForm">
-    @if(SuccessMessageDisp){
-      <p class="alert alert-success">{{messageContents}}</p>
-    }
-    @if(ErrorMessageDisp){
-        <p class="alert alert-danger">{{messageContents}}</p>
-    }
+  <!-- Form -->
+  <form [formGroup]="registerForm" (ngSubmit)="registerDriver()">
+    <!-- Success / Error Messages -->
+    <div *ngIf="SuccessMessageDisp" class="alert alert-success">{{ messageContents }}</div>
+    <div *ngIf="ErrorMessageDisp" class="alert alert-danger">{{ messageContents }}</div>
+
+    <!-- PERSONAL INFORMATION -->
     <div class="section">
       <h3>Personal Information</h3>
 
-      <input [(ngModel)]="driver.FullName" name="fullName" placeholder="Full Name" required />
-      <input [(ngModel)]="driver.Email" name="email" type="email" placeholder="Email" required />
-      <input [(ngModel)]="driver.PhoneNumber" name="phoneNumber" placeholder="Phone Number" required />
-      <input [(ngModel)]="driver.Password" name="password" type="password" placeholder="Password" required />
-      <input [(ngModel)]="driver.License" name="license" placeholder="License Number" required />
-      <label for="DateOfBirth"> Date of birth</label>
-      <input [(ngModel)]="driver.DateOfBirth" type="date" name="DateOfBirth" placeholder="Date of birth" required />
-      <label>Gender</label>
-      <select [(ngModel)]="driver.Gender" name="type" required>
-        <option *ngFor="let gender of genders" [ngValue]="gender.id">{{ gender.name }}</option>
-      </select>
+      <!-- Full Name & Email -->
+      <div class="grid-2">
+        <div class="field">
+          <label>Full Name</label>
+          <input formControlName="FullName" placeholder="Full Name" />
+          <small
+            class="error-text"
+            *ngIf="registerForm.get('FullName')?.touched && registerForm.get('FullName')?.invalid"
+          >
+            Full name must be at least 3 characters.
+          </small>
+        </div>
+
+        <div class="field">
+          <label>Email</label>
+          <input formControlName="Email" type="email" placeholder="Email" />
+          <small
+            class="error-text"
+            *ngIf="registerForm.get('Email')?.touched && registerForm.get('Email')?.invalid"
+          >
+            Invalid email.
+          </small>
+        </div>
+      </div>
+
+      <!-- Phone & Password -->
+      <div class="grid-2">
+        <div class="field">
+          <label>Phone Number</label>
+          <input formControlName="PhoneNumber" placeholder="Phone Number" />
+          <small
+            class="error-text"
+            *ngIf="
+              registerForm.get('PhoneNumber')?.touched && registerForm.get('PhoneNumber')?.invalid
+            "
+          >
+            Phone must be 11 digits.
+          </small>
+        </div>
+
+        <div class="field">
+          <label>Password</label>
+          <input formControlName="Password" type="password" placeholder="Password" />
+
+          <small class="error-text" *ngIf="registerForm.get('Password')?.touched">
+            <span *ngIf="registerForm.get('Password')?.errors?.['minLength']">
+              Password must be at least 6 characters.
+            </span>
+            <span *ngIf="registerForm.get('Password')?.errors?.['uppercase']">
+              Password must contain at least 1 uppercase letter.
+            </span>
+            <span *ngIf="registerForm.get('Password')?.errors?.['lowercase']">
+              Password must contain at least 1 lowercase letter.
+            </span>
+            <span *ngIf="registerForm.get('Password')?.errors?.['number']">
+              Password must contain at least 1 number.
+            </span>
+            <span *ngIf="registerForm.get('Password')?.errors?.['special']">
+              Password must contain at least 1 special character.
+            </span>
+            <span *ngIf="registerForm.get('Password')?.errors?.['noSpaces']">
+              Password cannot contain spaces.
+            </span>
+          </small>
+        </div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="field">
+        <label>Confirm Password</label>
+        <input formControlName="ConfirmPassword" type="password" placeholder="Confirm Password" />
+
+        <small class="error-text" *ngIf="registerForm.get('ConfirmPassword')?.touched">
+          <span *ngIf="registerForm.get('ConfirmPassword')?.errors?.['mismatch']">
+            Passwords did not match.
+          </span>
+        </small>
+      </div>
+
+      <!-- License & Date of Birth -->
+      <div class="grid-2">
+        <div class="field">
+          <label>License</label>
+          <input formControlName="License" placeholder="License" />
+          <small
+            class="error-text"
+            *ngIf="registerForm.get('License')?.touched && registerForm.get('License')?.invalid"
+          >
+            License must be at least 4 characters.
+          </small>
+        </div>
+
+        <div class="field">
+          <label>Date of Birth</label>
+          <input type="date" formControlName="DateOfBirth" />
+        </div>
+      </div>
+
+      <!-- Gender -->
+      <div class="field">
+        <label>Gender</label>
+        <select formControlName="Gender">
+          <option value="">Select gender</option>
+          <option *ngFor="let g of genders" [value]="g.id">{{ g.name }}</option>
+        </select>
+      </div>
     </div>
 
-    <div class="section">
+    <!-- VEHICLE INFORMATION -->
+    <div class="section" formGroupName="Vehicle">
       <h3>Vehicle Information</h3>
 
-      <input [(ngModel)]="driver.Vehicle.PlateNumber" name="plateNumber" placeholder="Plate Number" required />
-      <input [(ngModel)]="driver.Vehicle.Model" name="model" placeholder="Model" required />
-      <input [(ngModel)]="driver.Vehicle.Color" name="color" placeholder="Color" required />
-      <input [(ngModel)]="driver.Vehicle.Make" name="make" placeholder="Make" required />
-      <input [(ngModel)]="driver.Vehicle.Year" name="year" type="number" placeholder="Year" required />
+      <!-- Plate Number & Model -->
+      <div class="grid-2">
+        <div class="field">
+          <label>Plate Number</label>
+          <input formControlName="PlateNumber" placeholder="Plate Number" />
+          <small
+            class="error-text"
+            *ngIf="
+              registerForm.get('Vehicle.PlateNumber')?.touched &&
+              registerForm.get('Vehicle.PlateNumber')?.invalid
+            "
+          >
+            Plate number must be at least 6 characters.
+          </small>
+        </div>
 
-      <label>Vehicle Type</label>
-      <select [(ngModel)]="driver.Vehicle.Type" name="type" required>
-        <option *ngFor="let type of vehicleTypes" [ngValue]="type.id">{{ type.name }}</option>
-      </select>
+        <div class="field">
+          <label>Model</label>
+          <input formControlName="Model" placeholder="Model" />
+          <small
+            class="error-text"
+            *ngIf="
+              registerForm.get('Vehicle.Model')?.touched &&
+              registerForm.get('Vehicle.Model')?.invalid
+            "
+          >
+            Model is required.
+          </small>
+        </div>
+      </div>
 
-      <label>Capacity</label>
-      <select [(ngModel)]="driver.Vehicle.Capacity" name="capacity" required>
-        <option *ngFor="let cap of capacities" [ngValue]="cap.id">{{ cap.name }}</option>
-      </select>
+      <!-- Color & Make -->
+      <div class="grid-2">
+        <div class="field">
+          <label>Color</label>
+          <input formControlName="Color" placeholder="Color" />
+          <small
+            class="error-text"
+            *ngIf="
+              registerForm.get('Vehicle.Color')?.touched &&
+              registerForm.get('Vehicle.Color')?.invalid
+            "
+          >
+            Color is required.
+          </small>
+        </div>
+        <div class="field">
+          <label>Make</label>
+          <input formControlName="Make" placeholder="Make" />
+          <small
+            class="error-text"
+            *ngIf="
+              registerForm.get('Vehicle.Make')?.touched && registerForm.get('Vehicle.Make')?.invalid
+            "
+          >
+            Make is required.
+          </small>
+        </div>
+      </div>
 
-      <label>Transmission</label>
-      <select [(ngModel)]="driver.Vehicle.Transmission" name="transmission" required>
-        <option *ngFor="let trans of transmissions" [ngValue]="trans.id">{{ trans.name }}</option>
-      </select>
+      <!-- Year -->
+      <div class="field">
+        <label>Year</label>
+        <select formControlName="Year">
+          <option value="">Select Year</option>
+          <option *ngFor="let year of vehicleYears" [value]="year">{{ year }}</option>
+        </select>
+        <small
+          class="error-text"
+          *ngIf="
+            registerForm.get('Vehicle.Year')?.touched && registerForm.get('Vehicle.Year')?.invalid
+          "
+        >
+          Year is required.
+        </small>
+      </div>
 
-      <label>Engine Type</label>
-      <select [(ngModel)]="driver.Vehicle.EngineType" name="engineType" required>
-        <option *ngFor="let eng of engineTypes" [ngValue]="eng.id">{{ eng.name }}</option>
-      </select>
+      <!-- Vehicle Type & Capacity -->
+      <div class="grid-2">
+        <div class="field">
+          <label>Vehicle Type</label>
+          <select formControlName="Type">
+            <option value="">Select type</option>
+            <option *ngFor="let type of vehicleTypes" [value]="type.id">{{ type.name }}</option>
+          </select>
+          <small
+            class="error-text"
+            *ngIf="
+              registerForm.get('Vehicle.Type')?.touched && registerForm.get('Vehicle.Type')?.invalid
+            "
+          >
+            Vehicle type is required.
+          </small>
+        </div>
+        <div class="field">
+          <label>Capacity</label>
+          <select formControlName="Capacity">
+            <option value="">Select capacity</option>
+            <option *ngFor="let cap of capacities" [value]="cap.id">{{ cap.name }}</option>
+          </select>
+          <small
+            class="error-text"
+            *ngIf="
+              registerForm.get('Vehicle.Capacity')?.touched &&
+              registerForm.get('Vehicle.Capacity')?.invalid
+            "
+          >
+            Capacity is required.
+          </small>
+        </div>
+      </div>
+
+      <!-- Transmission & Engine Type -->
+      <div class="grid-2">
+        <div class="field">
+          <label>Transmission</label>
+          <select formControlName="Transmission">
+            <option value="">Select transmission</option>
+            <option *ngFor="let t of transmissions" [value]="t.id">{{ t.name }}</option>
+          </select>
+          <small
+            class="error-text"
+            *ngIf="
+              registerForm.get('Vehicle.Transmission')?.touched &&
+              registerForm.get('Vehicle.Transmission')?.invalid
+            "
+          >
+            Transmission is required.
+          </small>
+        </div>
+        <div class="field">
+          <label>Engine Type</label>
+          <select formControlName="EngineType">
+            <option value="">Select engine type</option>
+            <option *ngFor="let eng of engineTypes" [value]="eng.id">{{ eng.name }}</option>
+          </select>
+          <small
+            class="error-text"
+            *ngIf="
+              registerForm.get('Vehicle.EngineType')?.touched &&
+              registerForm.get('Vehicle.EngineType')?.invalid
+            "
+          >
+            Engine type is required.
+          </small>
+        </div>
+      </div>
     </div>
 
-    <button type="submit" [disabled]="!registerForm.valid">Register</button>
+    <!-- Submit Button -->
+    <button type="submit" [disabled]="registerForm.invalid || loading">
+      <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+      Register
+    </button>
   </form>
 </div>
