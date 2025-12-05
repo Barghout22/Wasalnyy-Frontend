@@ -1,0 +1,37 @@
+.unauthorized-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f8f9fa;
+}
+
+.unauthorized-container h1 {
+  font-size: 48px;
+  color: #dc3545;
+  margin-bottom: 20px;
+}
+
+.unauthorized-container p {
+  font-size: 20px;
+  margin-bottom: 25px;
+  color: #555;
+}
+
+.unauthorized-container .btn {
+  padding: 12px 25px;
+  background: #1ca571;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.unauthorized-container .btn:hover {
+  background: #16a085;
+}

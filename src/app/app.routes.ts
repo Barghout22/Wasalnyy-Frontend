@@ -27,40 +27,36 @@ import { RiderAccountComponent } from './components/rider-account/rider-account'
 
 import { SubmitComplaint } from './components/submit-complaint/submit-complaint';
 import { ComplaintHistory } from './components/complaint-history/complaint-history';
+import { Unauthorized } from './components/unauthorized/unauthorized';
 
 export const routes: Routes = [
   { path: '', component: DashboardRedirectComponent },
   { path: 'login/:role', component: LoginComponent },
-  { path: 'choose-user-type', component: ChooseUserComponent, pathMatch:'full' },
+  { path: 'choose-user-type', component: ChooseUserComponent, pathMatch: 'full' },
   { path: 'register-driver', component: RegisterDriverComponent },
   { path: 'register-rider', component: RegisterRider },
   { path: 'face-scan/register/:userId', component: FaceScan },
   { path: 'face-scan/login', component: FaceScan },
-
   { path: 'dashboard', component: Dashboard, canActivate: [AuthGuard] },
-  {path:'history',component:TripHistory,canActivate:[AuthGuard]},
-  {path:'profile',component: Profile,canActivate:[AuthGuard]},
-  { path: 'admin-dashboard', component: AdminDashboard ,canActivate:[AuthGuard],data:{role:'Admin'}},
-
-  {path:'submit-complaint/:tripId',component:SubmitComplaint,canActivate:[AuthGuard]},
-  {path:'view-complaints',component:ComplaintHistory,canActivate:[AuthGuard]},
-  { path: 'reset-password', component: ResetPassword},
-  { path: 'forgot-password', component: ForgotPassword},
-
-  { path:`driver-map`,component:DriverMap, canActivate: [AuthGuard], data: { role: 'Driver' }},
-  { path:`rider-map`,component:RiderMap, canActivate: [AuthGuard], data: { role: 'Rider' }},
-
-  { path:'wallet',component:Wallet, canActivate: [AuthGuard]},
-  { path: 'payment-failed', component: PaymentFailed ,canActivate:[AuthGuard],data:{role:'Rider'}},
-  { path: 'payment-successful', component: PaymentSuccessful,canActivate:[AuthGuard],data:{role:'Rider'} },
-  {path:'admin/drivers',component:AdminDriversComponent,canActivate:[AuthGuard],data:{role:'Admin'}},
-  {path:'admin/riders',component:AdminRidersComponent,canActivate:[AuthGuard],data:{role:'Admin'}},
-  {path:'admin/trips',component:AdminTripsComponent,canActivate:[AuthGuard],data:{role:'Admin'}},
-  {path:'admin/reports',component:AdminReportsComponent,canActivate:[AuthGuard],data:{role:'Admin'}},
-  {path:'admin/complaints',component:AdminComplaintsComponent,canActivate:[AuthGuard],data:{role:'Admin'}},
-  {path: 'driveraccount',component:DriverAccountComponent,canActivate:[AuthGuard],data:{role:'Driver'}},
-  {path: 'rideraccount',component:RiderAccountComponent,canActivate:[AuthGuard],data:{role:'Rider'}},
-
-
+  { path: 'history', component: TripHistory, canActivate: [AuthGuard] },
+  { path: 'profile', component: Profile, canActivate: [AuthGuard] },
+  { path: 'admin-dashboard', component: AdminDashboard, canActivate: [AuthGuard], data: { role: 'Admin' } },
+  { path: 'submit-complaint/:tripId', component: SubmitComplaint, canActivate: [AuthGuard] },
+  { path: 'view-complaints', component: ComplaintHistory, canActivate: [AuthGuard] },
+  { path: 'reset-password', component: ResetPassword },
+  { path: 'forgot-password', component: ForgotPassword },
+  { path: `driver-map`, component: DriverMap, canActivate: [AuthGuard], data: { role: 'Driver' } },
+  { path: `rider-map`, component: RiderMap, canActivate: [AuthGuard], data: { role: 'Rider' } },
+  { path: 'wallet', component: Wallet, canActivate: [AuthGuard] },
+  { path: 'payment-failed', component: PaymentFailed, canActivate: [AuthGuard], data: { role: 'Rider' } },
+  { path: 'payment-successful', component: PaymentSuccessful, canActivate: [AuthGuard], data: { role: 'Rider' } },
+  { path: 'admin/drivers', component: AdminDriversComponent, canActivate: [AuthGuard], data: { role: 'Admin' } },
+  { path: 'admin/riders', component: AdminRidersComponent, canActivate: [AuthGuard], data: { role: 'Admin' } },
+  { path: 'admin/trips', component: AdminTripsComponent, canActivate: [AuthGuard], data: { role: 'Admin' } },
+  { path: 'admin/reports', component: AdminReportsComponent, canActivate: [AuthGuard], data: { role: 'Admin' } },
+  { path: 'admin/complaints', component: AdminComplaintsComponent, canActivate: [AuthGuard], data: { role: 'Admin' } },
+  { path: 'driveraccount', component: DriverAccountComponent, canActivate: [AuthGuard], data: { role: 'Driver' } },
+  { path: 'rideraccount', component: RiderAccountComponent, canActivate: [AuthGuard], data: { role: 'Rider' } },
+  { path: 'unauthorized', component: Unauthorized },
   { path: '**', redirectTo: '' }
 ];

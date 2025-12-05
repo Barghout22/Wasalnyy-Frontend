@@ -9,7 +9,7 @@
 /* ---------- Left Section (Logo / Branding) ---------- */
 .left-side {
   flex: 1;
-  background: linear-gradient(135deg, #dfffe8, #b9ffd0, #a2f5c0);
+  background: linear-gradient(135deg, #dfffe8, #62db8a, #a2f5c0);
   animation: gradientMove 10s infinite alternate;
   background-size: 200% 200%;
   display: flex;
