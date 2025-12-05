@@ -5,37 +5,39 @@
   </div>
 
   <!-- Message -->
-  <div *ngIf="message" [ngClass]="messageType === 'success' ? 'success' : 'error'">
+  <div *ngIf="message" [ngClass]="messageType === 'success' ? 'success' : 'error'" class="message">
     {{ message }}
   </div>
 
   <!-- Search Section -->
   <div class="search-section">
     <div class="search-group">
+      <label>Search by License Number</label>
       <input 
         type="text" 
         [(ngModel)]="searchLicense" 
         placeholder="Enter driver license number"
       >
-      <button (click)="getDriverByLicense()">Search by License</button>
+      <button (click)="getDriverByLicense()" [disabled]="!searchLicense.trim()">Search by License</button>
     </div>
 
     <div class="search-group">
+      <label>Search by Driver ID</label>
       <input 
         type="text" 
         [(ngModel)]="searchDriverId" 
         placeholder="Enter driver ID"
       >
-      <button (click)="getDriverById()">Search by ID</button>
+      <button (click)="getDriverById()" [disabled]="!searchDriverId.trim()">Search by ID</button>
     </div>
 
     <div class="search-group">
+      <label>Driver ID for Operations</label>
       <input 
         type="text" 
         [(ngModel)]="driverId" 
         placeholder="Enter driver ID for trip count"
       >
-      <button (click)="getDriverTripCount()">Get Trip Count</button>
     </div>
   </div>
 
@@ -44,28 +46,20 @@
     <button class="action-btn btn-all-drivers" (click)="getAllDrivers()">
       📋 Get All Drivers
     </button>
-    <button class="action-btn btn-by-license" (click)="getDriverByLicense()" [disabled]="!searchLicense">
+    <button class="action-btn btn-by-license" (click)="getDriverByLicense()" [disabled]="!searchLicense.trim()">
       🔍 Get by License
     </button>
-    <button class="action-btn btn-by-license" (click)="getDriverById()" [disabled]="!searchDriverId">
+    <button class="action-btn btn-by-id" (click)="getDriverById()" [disabled]="!searchDriverId.trim()">
       🔍 Search by ID
     </button>
-    <button class="action-btn btn-trip-count" (click)="getDriverTripCount()" [disabled]="!driverId">
+    <button class="action-btn btn-trip-count" (click)="getDriverTripCount()" [disabled]="!driverId.trim()">
       📊 Trip Count
     </button>
-    <button class="action-btn btn-trips" (click)="getDriverTrips()" [disabled]="!driverId">
-      🚗 Get Trips
-    </button>
-    <button class="action-btn btn-submitted-complaints" (click)="getSubmittedComplaints()" [disabled]="!searchLicense">
-      📤 Submitted Complaints
-    </button>
-    <button class="action-btn btn-against-complaints" (click)="getComplaintsAgainst()" [disabled]="!searchLicense">
-      📥 Complaints Against
-    </button>
-    <button class="action-btn btn-rating" (click)="getDriverRating()" [disabled]="!searchLicense">
+
+    <button class="action-btn btn-rating" (click)="getDriverRating()" [disabled]="!searchLicense.trim()">
       ⭐ Get Rating
     </button>
-    <button class="action-btn btn-suspend" (click)="suspendDriver()" [disabled]="!searchLicense">
+    <button class="action-btn btn-suspend" (click)="suspendDriver()" [disabled]="!searchLicense.trim()">
       🚫 Suspend Driver
     </button>
   </div>
@@ -75,25 +69,50 @@
     <h3>Results</h3>
     <div *ngIf="isLoading" class="loading">Loading...</div>
     
-    <table *ngIf="!isLoading && drivers.length > 0">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>License</th>
-          <th>Phone</th>
-          <th>Email</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let driver of drivers">
-          <td>{{ driver.id }}</td>
-          <td>{{ driver.name }}</td>
-          <td>{{ driver.license }}</td>
-          <td>{{ driver.phone }}</td>
-          <td>{{ driver.email }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div *ngIf="!isLoading && drivers.length > 0" class="results-container">
+      <!-- Display Driver Information -->
+      <div *ngIf="drivers[0]?.fullName || drivers[0]?.name" class="drivers-table">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>License</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>Created At</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let driver of drivers">
+              <td>{{ driver.id }}</td>
+              <td>{{ driver.fullName || driver.name }}</td>
+              <td>{{ driver.license || driver.licenseNumber || 'N/A' }}</td>
+              <td>{{ driver.phoneNumber || driver.phone || 'N/A' }}</td>
+              <td>{{ driver.email || 'N/A' }}</td>
+              <td>{{ driver.createdAt | date:'short' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Display Complaints -->
+      <div *ngIf="drivers[0]?.complaintId && !drivers[0]?.fullName" class="complaints-container">
+        <div *ngFor="let complaint of drivers" class="complaint-card">
+          <div class="complaint-header">
+            <h4>Complaint ID: {{ complaint.id }}</h4>
+            <span class="complaint-status">{{ complaint.status || 'Pending' }}</span>
+          </div>
+          
+          <div class="complaint-info">
+            <p><strong>Description:</strong> {{ complaint.description || 'N/A' }}</p>
+            <p><strong>Type:</strong> {{ complaint.type || 'N/A' }}</p>
+            <p><strong>Filed By:</strong> {{ complaint.filedById || 'N/A' }}</p>
+            <p><strong>Against:</strong> {{ complaint.againstId || 'N/A' }}</p>
+            <p><strong>Created At:</strong> {{ complaint.createdAt | date:'medium' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

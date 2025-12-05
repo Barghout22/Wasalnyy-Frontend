@@ -35,6 +35,7 @@ export class AdminRidersComponent implements OnInit {
     this.message = '';
     this.adminService.getAllRiders().subscribe({
       next: (data) => {
+        console.log(data);
         this.riders = data;
         this.isLoading = false;
         this.message = `Loaded ${data.length} riders`;
@@ -59,6 +60,7 @@ export class AdminRidersComponent implements OnInit {
     this.adminService.getRiderByPhone(this.searchPhone).subscribe({
       next: (data) => {
         if (data) {
+          console.log(data);
           this.riders = [data];
           this.isLoading = false;
           this.message = 'Rider found: ' + data.fullName;
@@ -88,11 +90,12 @@ export class AdminRidersComponent implements OnInit {
       return;
     }
     this.isLoading = true;
-    this.adminService.getRiderTrips(this.searchRiderId).subscribe({
+    this.adminService.getRiderById(this.searchRiderId).subscribe({
       next: (data) => {
-        if (data && data.length > 0) {
+        console.log(data);
+        if (data ) {
           // Get the rider info from the first trip
-          const riderData = data[0]?.rider;
+          const riderData = data;
           if (riderData) {
             this.riders = [riderData];
             this.isLoading = false;
@@ -153,10 +156,17 @@ export class AdminRidersComponent implements OnInit {
     this.isLoading = true;
     this.adminService.getRiderTrips(this.riderId).subscribe({
       next: (data) => {
-        this.riders = data;
-        this.isLoading = false;
-        this.message = `Loaded ${data.length} trips`;
-        this.messageType = 'success';
+        if (data?.trips && Array.isArray(data.trips)) {
+          this.riders = data.trips;
+          this.isLoading = false;
+          this.message = `Loaded ${data.trips.length} trips`;
+          this.messageType = 'success';
+        } else {
+          this.riders = [];
+          this.isLoading = false;
+          this.message = 'No trips found';
+          this.messageType = 'error';
+        }
       },
       error: (err) => {
         this.isLoading = false;
@@ -176,9 +186,14 @@ export class AdminRidersComponent implements OnInit {
     this.isLoading = true;
     this.adminService.getRiderTripsByPhone(this.searchPhone).subscribe({
       next: (data) => {
-        this.riders = data;
+        if (Array.isArray(data)) {
+          this.riders = data;
+          this.message = `Loaded ${data.length} trips`;
+        } else {
+          this.riders = data ? [data] : [];
+          this.message = `Loaded ${this.riders.length} trips`;
+        }
         this.isLoading = false;
-        this.message = `Loaded ${data.length} trips`;
         this.messageType = 'success';
       },
       error: (err) => {
@@ -199,12 +214,45 @@ export class AdminRidersComponent implements OnInit {
     this.isLoading = true;
     this.adminService.getRiderComplaintsByPhone(this.searchPhone).subscribe({
       next: (data) => {
-        this.riders = data;
+        if (Array.isArray(data)) {
+          this.riders = data;
+          this.message = `Loaded ${data.length} complaints`;
+        } else {
+          this.riders = data ? [data] : [];
+          this.message = `Loaded ${this.riders.length} complaints`;
+        }
         this.isLoading = false;
-        this.message = `Loaded ${data.length} complaints`;
         this.messageType = 'success';
       },
       error: (err) => {
+        this.isLoading = false;
+        this.message = 'Error loading complaints';
+        this.messageType = 'error';
+      }
+    });
+  }
+
+  // Get rider against complaints by phone
+  getRiderAgainstComplaintsByPhone() {
+    if (!this.searchPhone.trim()) {
+      this.message = 'Please enter a phone number';
+      this.messageType = 'error';
+      return;
+    }
+    this.isLoading = true;
+    this.adminService.getRiderAgainstComplaintsByPhone(this.searchPhone).subscribe({
+      next: (data: any) => {
+        if (Array.isArray(data)) {
+          this.riders = data;
+          this.message = `Loaded ${data.length} complaints against this rider`;
+        } else {
+          this.riders = data ? [data] : [];
+          this.message = `Loaded ${this.riders.length} complaints against this rider`;
+        }
+        this.isLoading = false;
+        this.messageType = 'success';
+      },
+      error: (err: any) => {
         this.isLoading = false;
         this.message = 'Error loading complaints';
         this.messageType = 'error';

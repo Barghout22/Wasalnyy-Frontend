@@ -5,65 +5,63 @@
   </div>
 
   <!-- Message -->
-  <div *ngIf="message" [ngClass]="messageType === 'success' ? 'success' : 'error'">
+  <div *ngIf="message" [ngClass]="messageType === 'success' ? 'success' : 'error'" class="message">
     {{ message }}
   </div>
 
   <!-- Search Section -->
   <div class="search-section">
     <div class="search-group">
+      <label>Search by Phone Number</label>
       <input 
         type="text" 
         [(ngModel)]="searchPhone" 
         placeholder="Enter rider phone number"
       >
-      <button (click)="getRiderByPhone()">Search by Phone</button>
+      <button (click)="getRiderByPhone()" [disabled]="!searchPhone.trim()">Search by Phone</button>
     </div>
 
     <div class="search-group">
+      <label>Search by Rider ID</label>
       <input 
         type="text" 
         [(ngModel)]="searchRiderId" 
         placeholder="Enter rider ID"
       >
-      <button (click)="getRiderById()">Search by ID</button>
+      <button (click)="getRiderById()" [disabled]="!searchRiderId.trim()">Search by ID</button>
     </div>
 
     <div class="search-group">
+      <label>Rider ID for Operations</label>
       <input 
         type="text" 
         [(ngModel)]="riderId" 
         placeholder="Enter rider ID for operations"
       >
-      <button (click)="getRiderTripCount()">Get Trip Count</button>
     </div>
   </div>
 
   <!-- Action Buttons -->
   <div class="buttons-section">
     <button class="action-btn btn-all-riders" (click)="getAllRiders()">
-      📋 Get All Riders
+       Get All Riders
     </button>
-    <button class="action-btn btn-by-phone" (click)="getRiderByPhone()" [disabled]="!searchPhone">
-      🔍 Search by Phone
+    <button class="action-btn btn-by-phone" (click)="getRiderByPhone()" [disabled]="!searchPhone.trim()">
+       Search by Phone
     </button>
-    <button class="action-btn btn-by-id" (click)="getRiderById()" [disabled]="!searchRiderId">
-      🔍 Search by ID
+    
+    <button class="action-btn btn-trip-count" (click)="getRiderTripCount()" [disabled]="!riderId.trim()">
+       Trip Count
     </button>
-    <button class="action-btn btn-trip-count" (click)="getRiderTripCount()" [disabled]="!riderId">
-      📊 Trip Count
+    <button class="action-btn btn-trips" (click)="getRiderTrips()" [disabled]="!riderId.trim()">
+       Get Trips
     </button>
-    <button class="action-btn btn-trips" (click)="getRiderTrips()" [disabled]="!riderId">
-      🚗 Get Trips
+    <button class="action-btn btn-trips-by-phone" (click)="getRiderTripsByPhone()" [disabled]="!searchPhone.trim()">
+       Trips by Phone
     </button>
-    <button class="action-btn btn-trips-by-phone" (click)="getRiderTripsByPhone()" [disabled]="!searchPhone">
-      📱 Trips by Phone
-    </button>
-    <button class="action-btn btn-complaints" (click)="getRiderComplaintsByPhone()" [disabled]="!searchPhone">
-      📋 Complaints by Phone
-    </button>
-    <button class="action-btn btn-suspend" (click)="suspendRider()" [disabled]="!riderId">
-      🚫 Suspend Rider
+   
+    <button class="action-btn btn-suspend" (click)="suspendRider()" [disabled]="!riderId.trim()">
+       Suspend Rider
     </button>
   </div>
 
@@ -72,25 +70,104 @@
     <h3>Results</h3>
     <div *ngIf="isLoading" class="loading">Loading...</div>
     
-    <table *ngIf="!isLoading && riders.length > 0">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Phone</th>
-          <th>Email</th>
-          <th>Created At</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let rider of riders">
-          <td>{{ rider.id }}</td>
-          <td>{{ rider.fullName }}</td>
-          <td>{{ rider.phoneNumber }}</td>
-          <td>{{ rider.email }}</td>
-          <td>{{ rider.createdAt | date:'short' }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div *ngIf="!isLoading && riders.length > 0" class="results-container">
+      <!-- Display Rider Information -->
+      <div *ngIf="riders[0]?.fullName && !riders[0]?.tripStatus && !riders[0]?.complaintId" class="riders-table">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>Gender</th>
+              <th>Date of Birth</th>
+              <th>Status</th>
+              <th>Created At</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let rider of riders">
+              <td>{{ rider.riderId }}</td>
+              <td>{{ rider.fullName }}</td>
+              <td>{{ rider.phonenumber || 'N/A' }}</td>
+              <td>{{ rider.email || 'N/A' }}</td>
+              <td>{{ rider.gender === 0 ? 'Male' : rider.gender === 1 ? 'Female' : 'N/A' }}</td>
+              <td>{{ rider.dateOfBirth | date:'short' }}</td>
+              <td>
+                <span [ngClass]="rider.isSuspended ? 'status-suspended' : 'status-active'">
+                  {{ rider.isSuspended ? ' Suspended' : ' Active' }}
+                </span>
+              </td>
+              <td>{{ rider.createdAt | date:'short' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Display Trips -->
+      <div *ngIf="riders[0]?.tripStatus" class="trips-container">
+        <div *ngFor="let trip of riders" class="trip-card">
+          <div class="trip-header">
+            <h4>Trip ID: {{ trip.id }}</h4>
+            <span [ngClass]="'status-badge status-' + (trip.tripStatus | lowercase)">
+              {{ trip.tripStatus }}
+            </span>
+          </div>
+          
+          <div class="trip-info">
+            <div class="info-column">
+              <h5>📋 Trip Details</h5>
+              <p><strong>Zone ID:</strong> {{ trip.zoneId || 'N/A' }}</p>
+              <p><strong>Payment Method:</strong> {{ trip.paymentMethod || 'N/A' }}</p>
+              <p><strong>Distance:</strong> {{ trip.distanceKm }} km</p>
+              <p><strong>Duration:</strong> {{ trip.durationMinutes }} minutes</p>
+              <p><strong>Price:</strong> {{ trip.price || '0' }} EGP</p>
+            </div>
+
+            <div class="info-column">
+              <h5>👤 Participants</h5>
+              <p><strong>Driver ID:</strong> {{ trip.driverId }}</p>
+              <p><strong>Rider ID:</strong> {{ trip.riderId }}</p>
+            </div>
+
+            <div class="info-column">
+              <h5>📍 Locations</h5>
+              <p><strong>Pickup:</strong> {{ trip.pickUpName || 'N/A' }}</p>
+              <p><strong>Pickup Coordinates:</strong> {{ trip.pickupCoordinates?.Lat }}, {{ trip.pickupCoordinates?.Lng }}</p>
+              <p><strong>Destination:</strong> {{ trip.destinationName || 'N/A' }}</p>
+              <p><strong>Destination Coordinates:</strong> {{ trip.destinationCoordinates?.Lat }}, {{ trip.destinationCoordinates?.Lng }}</p>
+              <p><strong>Current Coordinates:</strong> {{ trip.currentCoordinates?.Lat }}, {{ trip.currentCoordinates?.Lng }}</p>
+            </div>
+
+            <div class="info-column">
+              <h5>⏰ Dates & Times</h5>
+              <p><strong>Requested:</strong> {{ trip.requestedDate | date:'medium' }}</p>
+              <p><strong>Started:</strong> {{ trip.startDate | date:'medium' }}</p>
+              <p><strong>Arrived:</strong> {{ trip.arrivalDate | date:'medium' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Display Complaints -->
+      <div *ngIf="riders[0]?.complaintId && !riders[0]?.tripStatus" class="complaints-container">
+        <div *ngFor="let complaint of riders" class="complaint-card">
+          <div class="complaint-header">
+            <h4>Complaint ID: {{ complaint.id }}</h4>
+            <span class="complaint-status">{{ complaint.status || 'Pending' }}</span>
+          </div>
+          
+          <div class="complaint-info">
+            <p><strong>Complaint ID:</strong> {{ complaint.complaintId }}</p>
+            <p><strong>Description:</strong> {{ complaint.description || 'N/A' }}</p>
+            <p><strong>Type:</strong> {{ complaint.type || 'N/A' }}</p>
+            <p><strong>Filed By:</strong> {{ complaint.filedById || 'N/A' }}</p>
+            <p><strong>Against:</strong> {{ complaint.againstId || 'N/A' }}</p>
+            <p><strong>Created At:</strong> {{ complaint.createdAt | date:'medium' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

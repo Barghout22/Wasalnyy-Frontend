@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { AdminService } from '../../services/admin-service';
 import { CommonModule } from '@angular/common';
@@ -14,11 +13,15 @@ import { FormsModule } from '@angular/forms';
 export class AdminTripsComponent implements OnInit {
   trips: any[] = [];
   tripId: string = '';
-  tripStatus: string = '';
+  driverId: string = '';
+  riderId: string = '';
+  phone: string = '';
   isLoading: boolean = false;
   message: string = '';
   messageType: 'success' | 'error' = 'success';
-  tripStatusOptions: string[] = ['Pending', 'Accepted', 'Started', 'Completed', 'Cancelled'];
+  currentPage: number = 1;
+  pageSize: number = 10;
+  totalPages: number = 0;
 
   constructor(private adminService: AdminService) { }
 
@@ -61,28 +64,108 @@ export class AdminTripsComponent implements OnInit {
     });
   }
 
-  // Get trips by status
-  getTripsByStatus() {
-    if (!this.tripStatus.trim()) {
-      this.message = 'Please select a trip status';
+  // Get driver trips
+  getDriverTrips() {
+    if (!this.driverId.trim()) {
+      this.message = 'Please enter a driver ID';
       this.messageType = 'error';
       return;
     }
     this.isLoading = true;
-    this.adminService.getTripsByStatus(this.tripStatus).subscribe({
+    this.adminService.getDriverTrips(this.driverId).subscribe({
+      next: (data) => {
+        if (data?.trips && Array.isArray(data.trips)) {
+          this.trips = data.trips;
+          this.currentPage = data.currentPage;
+          this.pageSize = data.pageSize;
+          this.totalPages = data.totalPages;
+          this.message = `Loaded ${data.trips.length} driver trips (Page ${data.currentPage}/${data.totalPages})`;
+          this.messageType = 'success';
+        } else {
+          this.trips = [];
+          this.message = 'No trips found';
+          this.messageType = 'error';
+        }
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.trips = [];
+        this.message = 'Error loading driver trips';
+        this.messageType = 'error';
+        console.error('Error details:', err);
+      }
+    });
+  }
+
+  // Get rider trips
+  getRiderTrips() {
+    if (!this.riderId.trim()) {
+      this.message = 'Please enter a rider ID';
+      this.messageType = 'error';
+      return;
+    }
+    this.isLoading = true;
+    this.adminService.getRiderTrips(this.riderId).subscribe({
+      next: (data) => {
+        if (data?.trips && Array.isArray(data.trips)) {
+          this.trips = data.trips;
+          this.currentPage = data.currentPage;
+          this.pageSize = data.pageSize;
+          this.totalPages = data.totalPages;
+          this.message = `Loaded ${data.trips.length} rider trips (Page ${data.currentPage}/${data.totalPages})`;
+          this.messageType = 'success';
+        } else {
+          this.trips = [];
+          this.message = 'No trips found';
+          this.messageType = 'error';
+        }
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.trips = [];
+        this.message = 'Error loading rider trips';
+        this.messageType = 'error';
+        console.error('Error details:', err);
+      }
+    });
+  }
+
+  // Get rider trips by phone
+  getRiderTripsByPhone() {
+    if (!this.phone.trim()) {
+      this.message = 'Please enter a phone number';
+      this.messageType = 'error';
+      return;
+    }
+    this.isLoading = true;
+    this.adminService.getRiderTripsByPhone(this.phone).subscribe({
       next: (data) => {
         this.trips = data;
         this.isLoading = false;
-        this.message = `Loaded ${data.length} trips with status: ${this.tripStatus}`;
+        this.message = `Loaded ${data.length} trips for phone: ${this.phone}`;
         this.messageType = 'success';
       },
       error: (err) => {
         this.isLoading = false;
         this.trips = [];
-        this.message = 'Error loading trips by status';
+        this.message = 'Error loading rider trips by phone';
         this.messageType = 'error';
         console.error('Error details:', err);
       }
     });
+  }
+
+  // Clear results
+  clearResults() {
+    this.trips = [];
+    this.tripId = '';
+    this.driverId = '';
+    this.riderId = '';
+    this.phone = '';
+    this.message = '';
+    this.currentPage = 1;
+    this.totalPages = 0;
   }
 }

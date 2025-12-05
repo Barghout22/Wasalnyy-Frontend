@@ -57,13 +57,13 @@ export class AdminComplaintsComponent implements OnInit {
     }
     this.isLoading = true;
     this.adminService.getDriverSubmittedComplaints(this.driverLicense).subscribe({
-      next: (data) => {
+      next: (data: any) => {
         this.complaints = data;
         this.isLoading = false;
         this.message = `Found ${data.length} complaints submitted by driver`;
         this.messageType = 'success';
       },
-      error: (err) => {
+      error: (err: any) => {
         this.isLoading = false;
         this.complaints = [];
         this.message = 'Error loading complaints';
@@ -82,13 +82,13 @@ export class AdminComplaintsComponent implements OnInit {
     }
     this.isLoading = true;
     this.adminService.getDriverComplaintsAgainst(this.driverLicense).subscribe({
-      next: (data) => {
+      next: (data: any) => {
         this.complaints = data;
         this.isLoading = false;
         this.message = `Found ${data.length} complaints against driver`;
         this.messageType = 'success';
       },
-      error: (err) => {
+      error: (err: any) => {
         this.isLoading = false;
         this.complaints = [];
         this.message = 'Error loading complaints';
@@ -98,7 +98,7 @@ export class AdminComplaintsComponent implements OnInit {
     });
   }
 
-  // Get complaints by rider phone
+  // Get complaints submitted by rider
   getRiderComplaints() {
     if (!this.riderPhone.trim()) {
       this.message = 'Please enter a rider phone number';
@@ -107,13 +107,38 @@ export class AdminComplaintsComponent implements OnInit {
     }
     this.isLoading = true;
     this.adminService.getRiderComplaintsByPhone(this.riderPhone).subscribe({
-      next: (data) => {
+      next: (data: any) => {
         this.complaints = data;
         this.isLoading = false;
         this.message = `Found ${data.length} complaints from rider`;
         this.messageType = 'success';
       },
-      error: (err) => {
+      error: (err: any) => {
+        this.isLoading = false;
+        this.complaints = [];
+        this.message = 'Error loading complaints';
+        this.messageType = 'error';
+        console.error('Error:', err);
+      }
+    });
+  }
+
+  // Get complaints against rider
+  getRiderComplaintsAgainst() {
+    if (!this.riderPhone.trim()) {
+      this.message = 'Please enter a rider phone number';
+      this.messageType = 'error';
+      return;
+    }
+    this.isLoading = true;
+    this.adminService.getRiderAgainstComplaintsByPhone(this.riderPhone).subscribe({
+      next: (data: any) => {
+        this.complaints = data;
+        this.isLoading = false;
+        this.message = `Found ${data.length} complaints against rider`;
+        this.messageType = 'success';
+      },
+      error: (err: any) => {
         this.isLoading = false;
         this.complaints = [];
         this.message = 'Error loading complaints';
@@ -132,7 +157,7 @@ export class AdminComplaintsComponent implements OnInit {
     }
     this.isLoading = true;
     this.adminService.getComplaintById(this.complaintId).subscribe({
-      next: (data) => {
+      next: (data: any) => {
         if (data) {
           this.complaints = [data];
           this.isLoading = false;
@@ -145,7 +170,7 @@ export class AdminComplaintsComponent implements OnInit {
           this.messageType = 'error';
         }
       },
-      error: (err) => {
+      error: (err: any) => {
         this.isLoading = false;
         this.complaints = [];
         this.message = 'Complaint not found';

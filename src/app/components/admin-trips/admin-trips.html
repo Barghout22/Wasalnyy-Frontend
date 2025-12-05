@@ -5,39 +5,63 @@
   </div>
 
   <!-- Message -->
-  <div *ngIf="message" [ngClass]="messageType === 'success' ? 'success' : 'error'">
+  <div *ngIf="message" [ngClass]="messageType === 'success' ? 'success' : 'error'" class="message">
     {{ message }}
   </div>
 
   <!-- Search Section -->
   <div class="search-section">
+    <!-- Search by Trip ID -->
     <div class="search-group">
+      <label>Search by Trip ID</label>
       <input 
         type="text" 
         [(ngModel)]="tripId" 
         placeholder="Enter trip ID (UUID)"
       >
-      <button (click)="getTripById()">Search by ID</button>
+      <button (click)="getTripById()" [disabled]="!tripId.trim()">🔍 Search by ID</button>
     </div>
 
+    <!-- Search by Driver ID -->
     <div class="search-group">
-      <select [(ngModel)]="tripStatus" class="status-select">
-        <option value="">Select Trip Status</option>
-        <option *ngFor="let status of tripStatusOptions" [value]="status">
-          {{ status }}
-        </option>
-      </select>
-      <button (click)="getTripsByStatus()">Get by Status</button>
+      <label>Search by Driver ID</label>
+      <input 
+        type="text" 
+        [(ngModel)]="driverId" 
+        placeholder="Enter driver ID"
+      >
+      <button (click)="getDriverTrips()" [disabled]="!driverId.trim()">👨‍💼 Driver Trips</button>
+    </div>
+
+    <!-- Search by Rider ID -->
+    <div class="search-group">
+      <label>Search by Rider ID</label>
+      <input 
+        type="text" 
+        [(ngModel)]="riderId" 
+        placeholder="Enter rider ID"
+      >
+      <button (click)="getRiderTrips()" [disabled]="!riderId.trim()">👤 Rider Trips</button>
+    </div>
+
+    <!-- Search by Phone Number -->
+    <div class="search-group">
+      <label>Search by Phone Number</label>
+      <input 
+        type="text" 
+        [(ngModel)]="phone" 
+        placeholder="Enter phone number"
+      >
+      <button (click)="getRiderTripsByPhone()" [disabled]="!phone.trim()">📱 Trips by Phone</button>
     </div>
   </div>
 
+
+
   <!-- Action Buttons -->
   <div class="buttons-section">
-    <button class="action-btn btn-by-id" (click)="getTripById()" [disabled]="!tripId">
-      🔍 Search by ID
-    </button>
-    <button class="action-btn btn-by-status" (click)="getTripsByStatus()" [disabled]="!tripStatus">
-      📊 Get by Status
+    <button class="action-btn btn-clear" (click)="clearResults()" *ngIf="trips.length > 0">
+      🔄 Clear Results
     </button>
   </div>
 
@@ -46,35 +70,48 @@
     <h3>Results</h3>
     <div *ngIf="isLoading" class="loading">Loading...</div>
     
-    <table *ngIf="!isLoading && trips.length > 0">
-      <thead>
-        <tr>
-          <th>Trip ID</th>
-          <th>Driver</th>
-          <th>Rider</th>
-          <th>Status</th>
-          <th>Pickup Location</th>
-          <th>Dropoff Location</th>
-          <th>Requested Date</th>
-          <th>Price</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let trip of trips">
-          <td>{{ trip.id }}</td>
-          <td>{{ trip.driver?.fullName || 'N/A' }}</td>
-          <td>{{ trip.rider?.fullName || 'N/A' }}</td>
-          <td>
-            <span [ngClass]="'status-' + (trip.status | lowercase)">
-              {{ trip.status }}
-            </span>
-          </td>
-          <td>{{ trip.pickupLocation || 'N/A' }}</td>
-          <td>{{ trip.dropoffLocation || 'N/A' }}</td>
-          <td>{{ trip.requestedDate | date:'medium' }}</td>
-          <td>{{ trip.price || '0' }} EGP</td>
-        </tr>
-      </tbody>
-    </table>
+    <div *ngIf="!isLoading && trips.length > 0" class="trips-container">
+      <div *ngFor="let trip of trips" class="trip-card">
+        <div class="trip-header">
+          <h4>Trip ID: {{ trip.id }}</h4>
+          <span [ngClass]="'status-badge status-' + (trip.tripStatus | lowercase)">
+            {{ trip.tripStatus }}
+          </span>
+        </div>
+        
+        <div class="trip-info">
+          <div class="info-column">
+            <h5>📋 Trip Details</h5>
+            <p><strong>Zone ID:</strong> {{ trip.zoneId || 'N/A' }}</p>
+            <p><strong>Payment Method:</strong> {{ trip.paymentMethod || 'N/A' }}</p>
+            <p><strong>Distance:</strong> {{ trip.distanceKm }} km</p>
+            <p><strong>Duration:</strong> {{ trip.durationMinutes }} minutes</p>
+            <p><strong>Price:</strong> {{ trip.price || '0' }} EGP</p>
+          </div>
+
+          <div class="info-column">
+            <h5>👤 Participants</h5>
+            <p><strong>Driver ID:</strong> {{ trip.driverId }}</p>
+            <p><strong>Rider ID:</strong> {{ trip.riderId }}</p>
+          </div>
+
+          <div class="info-column">
+            <h5>📍 Locations</h5>
+            <p><strong>Pickup:</strong> {{ trip.pickUpName || 'N/A' }}</p>
+            <p><strong>Pickup Coordinates:</strong> {{ trip.pickupCoordinates?.Lat }}, {{ trip.pickupCoordinates?.Lng }}</p>
+            <p><strong>Destination:</strong> {{ trip.destinationName || 'N/A' }}</p>
+            <p><strong>Destination Coordinates:</strong> {{ trip.destinationCoordinates?.Lat }}, {{ trip.destinationCoordinates?.Lng }}</p>
+            <p><strong>Current Coordinates:</strong> {{ trip.currentCoordinates?.Lat }}, {{ trip.currentCoordinates?.Lng }}</p>
+          </div>
+
+          <div class="info-column">
+            <h5>⏰ Dates & Times</h5>
+            <p><strong>Requested:</strong> {{ trip.requestedDate | date:'medium' }}</p>
+            <p><strong>Started:</strong> {{ trip.startDate | date:'medium' }}</p>
+            <p><strong>Arrived:</strong> {{ trip.arrivalDate | date:'medium' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
