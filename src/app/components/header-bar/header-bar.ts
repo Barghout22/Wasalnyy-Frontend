@@ -13,7 +13,7 @@ export class HeaderBar implements OnInit{
   constructor(private authService:AuthService,private router:Router,private signalrService:SignalrServiceTs){}
   ngOnInit(): void {
     const route=this.router.url.split('/');
-    if(route[route.length-1]==="dashboard"){
+    if(route[route.length-1]==="dashboard"||route[route.length-1]==="admin-dashboard"){
       this.mainDashboard=true;
     }
     else{
@@ -27,6 +27,12 @@ export class HeaderBar implements OnInit{
     this.authService.logout();
   }
     backToDashboard(){
-          this.router.navigate(['./dashboard'])
+      if(this.authService.getRole()!=="Admin"){
+
+        this.router.navigate(['./dashboard'])
+      }
+      else{
+        this.router.navigate(['/admin-dashboard']);
+      }
         }
 }

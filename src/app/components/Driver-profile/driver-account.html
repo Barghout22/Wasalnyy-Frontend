@@ -1,29 +1,21 @@
+<app-header-bar></app-header-bar>
 <div class="account-container">
-  <div class="account-header">
-    <button class="back-btn" (click)="goBack()">← Back</button>
-    <h1>Driver Account</h1>
-    <div></div>
-  </div>
 
-  <!-- Loading State -->
   <div *ngIf="loading" class="loading">
     <div class="spinner"></div>
     <p>Loading your information...</p>
   </div>
 
-  <!-- Error Message -->
   <div *ngIf="error && !loading" class="alert alert-error">
     <span>{{ error }}</span>
     <button (click)="error = ''" class="close-btn">×</button>
   </div>
 
-  <!-- Success Message -->
   <div *ngIf="message" class="alert alert-success">
     <span>{{ message }}</span>
     <button (click)="message = ''" class="close-btn">×</button>
   </div>
 
-  <!-- Main Content -->
   <div *ngIf="!loading" class="account-content">
     <!-- Profile Image Section -->
     <div class="profile-image-section">
@@ -232,7 +224,6 @@
     </form>
   </div>
 
-  <!-- Email Update Modal -->
   <div *ngIf="isEmailModalOpen" class="modal-overlay">
     <div class="modal-content">
       <div class="modal-header">
@@ -240,7 +231,6 @@
         <button class="close-modal-btn" (click)="closeEmailModal()" [disabled]="isUpdatingEmail || emailMessage">×</button>
       </div>
 
-      <!-- Modal Error -->
       <div *ngIf="emailError" class="alert alert-error">
         <span>{{ emailError }}</span>
       </div>

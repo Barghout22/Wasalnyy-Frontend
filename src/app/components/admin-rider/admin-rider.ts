@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { AdminService } from '../../services/admin-service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HeaderBar } from '../header-bar/header-bar';
 
 @Component({
   selector: 'app-admin-riders',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,HeaderBar],
   templateUrl: './admin-rider.html',
   styleUrls: ['./admin-rider.css'],
 })

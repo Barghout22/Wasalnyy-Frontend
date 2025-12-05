@@ -135,7 +135,7 @@
 }
 
 .action-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
+   background: #5568d3;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 

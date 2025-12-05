@@ -1,8 +1,8 @@
+<app-header-bar></app-header-bar>
 <div class="container">
   <div class="header">
-    <h1>📊 Reports & Analytics</h1>
-    <button class="back-btn" (click)="goBack()">← Back to Dashboard</button>
-  </div>
+    <h1> Reports & Analytics</h1>
+    </div>
 
   <!-- Message -->
   <div *ngIf="message" [ngClass]="messageType === 'success' ? 'success' : 'error'">
@@ -17,7 +17,7 @@
   <!-- Dashboard Stats -->
   <div class="stats-container" *ngIf="dashboardLoaded && !isLoading">
     <div class="stat-card drivers-card">
-      <div class="stat-icon">👨‍💼</div>
+      <div class="stat-icon"></div>
       <div class="stat-content">
         <h3>Total Drivers</h3>
         <p class="stat-number">{{ totalDrivers }}</p>
@@ -25,7 +25,7 @@
     </div>
 
     <div class="stat-card riders-card">
-      <div class="stat-icon">👤</div>
+      <div class="stat-icon"></div>
       <div class="stat-content">
         <h3>Total Riders</h3>
         <p class="stat-number">{{ totalRiders }}</p>
@@ -33,7 +33,7 @@
     </div>
 
     <div class="stat-card trips-card">
-      <div class="stat-icon">🚗</div>
+      <div class="stat-icon"></div>
       <div class="stat-content">
         <h3>Total Trips</h3>
         <p class="stat-number">{{ totalTrips }}</p>
@@ -57,13 +57,13 @@
   <!-- Action Buttons -->
   <div class="buttons-section" *ngIf="dashboardLoaded">
     <button class="action-btn btn-refresh" (click)="refreshDashboard()">
-      🔄 Refresh Dashboard
+       Refresh Dashboard
     </button>
     <button class="action-btn btn-export" (click)="exportData()">
-      📥 Export Report
+       Export Report
     </button>
     <button class="action-btn btn-search" (click)="getComplaintById()" [disabled]="!complaintId">
-      🔍 Search Complaint
+       Search Complaint
     </button>
   </div>
 

@@ -1,25 +1,19 @@
-<div class="dashboard-container">
-  <h1 class="dashboard-title">Admin Dashboard</h1>
-  
-  <div class="buttons-grid">
-    <button class="nav-btn drivers-btn" (click)="goToDrivers()">
-      👨‍💼 Drivers
-    </button>
-    
-    <button class="nav-btn riders-btn" (click)="goToRiders()">
-      👤 Riders
-    </button>
-    
-    <button class="nav-btn trips-btn" (click)="goToTrips()">
-      🚗 Trips
-    </button >
-    <button (click)="goTocomplaints()">
+<app-header-bar></app-header-bar>
+<div class="container d-flex p-2 align-items-start justify-content-around my-5 flex-column gap-4">
+   <h1 class="dashboard-title">Admin Dashboard</h1>
+   
 
-
-    </button>
-    
-    <button class="nav-btn reports-btn" (click)="goToReports()">
-      📊 Reports
-    </button>
-  </div>
+        <div  class="dashboard-container fw-bold rounded-2 " (click)="goToDrivers()"><p>Drivers</p>
+        <img src="images/driver.png" alt="">
+        </div>
+        <div  class="dashboard-container fw-bold rounded-2 " (click)="goToRiders()"><p>Riders</p> 
+        <img src="images/rider.png" alt="">
+        </div>
+        <div  class="dashboard-container fw-bold rounded-2 " (click)="goToTrips()"><p>Trips</p>
+        <img src="images/trip.png" alt="">
+        </div>
+         <button (click)="goTocomplaints()"></button>
+        <div  class="dashboard-container fw-bold rounded-2 " (click)="goToReports()"><p>Reports</p>
+        <img src="images/report.png" alt="">
+        </div>
 </div>

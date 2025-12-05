@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { AdminService } from '../../services/admin-service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HeaderBar } from '../header-bar/header-bar';
 
 @Component({
   selector: 'app-admin-drivers',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,HeaderBar],
   templateUrl: './admin-driver.html',
   styleUrls: ['./admin-driver.css'],
 })
@@ -69,6 +70,7 @@ getDriverById() {
     this.message = '';
     this.adminService.getAllDrivers().subscribe({
       next: (data) => {
+        console.log(data);
         this.drivers = data;
         this.isLoading = false;
         this.message = `Loaded ${data.length} drivers`;

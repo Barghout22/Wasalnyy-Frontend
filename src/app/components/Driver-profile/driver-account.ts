@@ -6,10 +6,11 @@ import { Router } from '@angular/router';
 import { AccountDataService } from '../../services/account-data.service';
 import { AuthService } from '../../auth/auth-service';
 import { EmailUpdateService } from '../../services/email-update';
+import { HeaderBar } from '../header-bar/header-bar';
 @Component({
   selector: 'app-driver-account',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,HeaderBar],
   templateUrl: './driver-account.html',
   styleUrl: './driver-account.css'
 })
@@ -66,7 +67,7 @@ export class DriverAccountComponent implements OnInit {
     
     this.accountDataService.getUserData().subscribe({
       next: (res: any) => {
-        console.log('Driver data loaded:', res);
+       
         this.fullName = res.fullName || '';
         this.phoneNumber = res.phoneNumber || '';
         this.email = res.email || '';
@@ -82,8 +83,7 @@ export class DriverAccountComponent implements OnInit {
 
         this.storeOriginalData();
         this.loading = false;
-        console.log('vec model:', this.vehicleModel);
-      },
+        },
       error: (err) => {
         console.error('Error loading driver data:', err);
         this.error = 'Failed to load driver information';
